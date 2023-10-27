@@ -226,6 +226,8 @@ private:
 
         vkDeviceWaitIdle(device);
 
+        cleanupSwapchain();
+
         createSwapchain();
         createImageViews();
         createFramebuffers();
