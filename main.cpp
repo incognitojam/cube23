@@ -57,6 +57,22 @@ void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT
     }
 }
 
+struct QueueFamilyIndices {
+    std::optional<uint32_t> graphicsFamily;
+    std::optional<uint32_t> presentFamily;
+
+    [[nodiscard]] bool isComplete() const {
+        return graphicsFamily.has_value() &&
+               presentFamily.has_value();
+    }
+};
+
+struct SwapchainSupportDetails {
+    VkSurfaceCapabilitiesKHR capabilities;
+    std::vector<VkSurfaceFormatKHR> formats;
+    std::vector<VkPresentModeKHR> presentModes;
+};
+
 static std::vector<char> readFile(const std::string &filename) {
     std::ifstream file(filename, std::ios::ate | std::ios::binary);
     if (!file.is_open()) {
@@ -371,16 +387,6 @@ private:
         return requiredExtensions.empty();
     }
 
-    struct QueueFamilyIndices {
-        std::optional<uint32_t> graphicsFamily;
-        std::optional<uint32_t> presentFamily;
-
-        [[nodiscard]] bool isComplete() const {
-            return graphicsFamily.has_value() &&
-                   presentFamily.has_value();
-        }
-    };
-
     QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
         QueueFamilyIndices indices;
 
@@ -412,12 +418,6 @@ private:
 
         return indices;
     }
-
-    struct SwapchainSupportDetails {
-        VkSurfaceCapabilitiesKHR capabilities;
-        std::vector<VkSurfaceFormatKHR> formats;
-        std::vector<VkPresentModeKHR> presentModes;
-    };
 
     SwapchainSupportDetails querySwapchainSupport(VkPhysicalDevice device) {
         SwapchainSupportDetails details;
