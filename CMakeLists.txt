@@ -15,6 +15,9 @@ include_directories(${Vulkan_INCLUDE_DIRS} ${GLFW_DIR}/include)
 set(GLM_DIR "../../Libraries/glm")
 include_directories(${GLM_DIR})
 
+set(STB_DIR "../../Libraries/stb")
+include_directories(${STB_DIR})
+
 
 add_executable(cube23 main.cpp)
 
