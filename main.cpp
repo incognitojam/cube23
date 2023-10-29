@@ -906,6 +906,7 @@ private:
 
         uniformBuffers.resize(swapchainImages.size());
         uniformBuffersMemory.resize(swapchainImages.size());
+        uniformBuffersMapped.resize(swapchainImages.size());
 
         for (size_t i = 0; i < swapchainImages.size(); i++) {
             createBuffer(
