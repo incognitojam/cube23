@@ -21,6 +21,8 @@
 #include <stdexcept>
 #include <vector>
 
+#include "vox/Vox.h"
+
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
 
@@ -1725,16 +1727,3 @@ private:
         return VK_FALSE;
     }
 };
-
-int main() {
-    Application app;
-
-    try {
-        app.run();
-    } catch (const std::exception &e) {
-        std::cerr << e.what() << std::endl;
-        return EXIT_FAILURE;
-    }
-
-    return EXIT_SUCCESS;
-}
