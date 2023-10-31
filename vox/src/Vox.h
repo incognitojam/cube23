@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Vox/Application.h"
+#include "vox/application.h"
 
 // ---Entry Point ---------------
-#include "Vox/EntryPoint.h"
+#include "vox/entry_point.h"
 // ------------------------------

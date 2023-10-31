@@ -8,7 +8,7 @@ namespace Vox {
 
         virtual ~Application();
 
-        void run();
+        virtual void run();
     };
 
     Application *create_application();

@@ -21,10 +21,10 @@ include_directories(${STB_DIR})
 
 set(Vox_DIR ${CMAKE_CURRENT_LIST_DIR}/vox/src)
 set(Vox_SOURCES
-        ${Vox_DIR}/Vox/Application.h
-        ${Vox_DIR}/Vox/Application.cpp
-        ${Vox_DIR}/Vox/EntryPoint.h
-        ${Vox_DIR}/Vox.h
+        ${Vox_DIR}/vox/application.h
+        ${Vox_DIR}/vox/application.cpp
+        ${Vox_DIR}/vox/entry_point.h
+        ${Vox_DIR}/vox.h
 )
 
 add_library(vox STATIC ${Vox_SOURCES})
@@ -33,7 +33,7 @@ target_link_libraries(vox ${Vulkan_LIBRARIES} glfw)
 
 set(Cube_DIR ${CMAKE_CURRENT_LIST_DIR}/cube23/src)
 set(Cube_SOURCES
-        ${Cube_DIR}/CubeApp.cpp
+        ${Cube_DIR}/cube_app.cpp
 )
 add_executable(cube23 ${Cube_SOURCES})
 target_include_directories(cube23 PUBLIC ${Vox_DIR})

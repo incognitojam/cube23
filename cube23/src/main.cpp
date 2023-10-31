@@ -21,8 +21,6 @@
 #include <stdexcept>
 #include <vector>
 
-#include "vox/Vox.h"
-
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
 

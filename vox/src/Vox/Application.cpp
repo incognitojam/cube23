@@ -1,4 +1,4 @@
-#include "Vox/Application.h"
+#include "vox/application.h"
 
 #include <iostream>
 
