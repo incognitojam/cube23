@@ -26,6 +26,8 @@ namespace Vox {
         void setVSync(bool enabled);
         [[nodiscard]] bool isVSync() const;
 
+        [[nodiscard]] inline virtual void *getNativeWindow() const { return mWindow; }
+
         static Window *create(const std::string &title = "Vox Engine", int width = 800, int height = 600);
 
     private:

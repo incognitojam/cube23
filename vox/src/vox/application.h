@@ -15,11 +15,19 @@ namespace Vox {
         virtual void run();
 
         void onEvent(Event &);
+
+        inline Window &getWindow() { return *mWindow; }
+
+        inline static Application &get() { return *sInstance; }
+
     private:
         bool onWindowClose(WindowCloseEvent &);
 
         std::unique_ptr<Window> mWindow;
         bool mRunning = true;
+
+    private:
+        static Application *sInstance;
     };
 
     Application *create_application();

@@ -3,7 +3,14 @@
 #include <iostream>
 
 namespace Vox {
+    Application *Application::sInstance = nullptr;
+
     Application::Application() {
+        if (sInstance != nullptr) {
+            throw std::runtime_error("Application already exists!");
+        }
+        sInstance = this;
+
         mWindow = std::unique_ptr<Window>(Window::create());
         mWindow->setEventCallback(VX_BIND_EVENT_FN(Application::onEvent));
     }
