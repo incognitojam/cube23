@@ -2,6 +2,9 @@
 
 #include <iostream>
 
+#include "vox/input.h"
+#include "vox/key_codes.h"
+
 namespace Vox {
     Application *Application::sInstance = nullptr;
 
@@ -25,6 +28,9 @@ namespace Vox {
             glClearColor(0.5f, 0.0f, 0.5f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
             mWindow->onUpdate();
+
+            if (Vox::Input::isKeyPressed(VX_KEY_TAB))
+                std::cout << "Tab key is pressed (poll)!" << std::endl;
         }
     }
 
