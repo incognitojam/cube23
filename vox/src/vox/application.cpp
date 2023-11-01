@@ -3,16 +3,14 @@
 #include <iostream>
 
 namespace Vox {
-#define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
-
     Application::Application() {
         mWindow = std::unique_ptr<Window>(Window::create());
-        mWindow->setEventCallback(BIND_EVENT_FN(onEvent));
+        mWindow->setEventCallback(VX_BIND_EVENT_FN(Application::onEvent));
     }
 
     void Application::onEvent(Event &e) {
         EventDispatcher dispatcher(e);
-        dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FN(onWindowClose));
+        dispatcher.dispatch<WindowCloseEvent>(VX_BIND_EVENT_FN(Application::onWindowClose));
     }
 
     void Application::run() {
