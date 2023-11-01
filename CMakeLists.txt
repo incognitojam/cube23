@@ -23,8 +23,12 @@ include_directories(${OPENGL_INCLUDE_DIRS})
 
 set(Vox_DIR ${CMAKE_CURRENT_LIST_DIR}/vox/src)
 set(Vox_SOURCES
-        ${Vox_DIR}/vox/application.h
+        ${Vox_DIR}/vox/events/event.h
+        ${Vox_DIR}/vox/events/key_event.h
+        ${Vox_DIR}/vox/events/mouse_event.h
         ${Vox_DIR}/vox/application.cpp
+        ${Vox_DIR}/vox/application.h
+        ${Vox_DIR}/vox/core.h
         ${Vox_DIR}/vox/entry_point.h
         ${Vox_DIR}/vox.h
 )
