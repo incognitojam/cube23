@@ -30,6 +30,8 @@ set(Vox_SOURCES
         ${Vox_DIR}/vox/application.h
         ${Vox_DIR}/vox/core.h
         ${Vox_DIR}/vox/entry_point.h
+        ${Vox_DIR}/vox/input.cpp
+        ${Vox_DIR}/vox/input.h
         ${Vox_DIR}/vox/window.cpp
         ${Vox_DIR}/vox/window.h
         ${Vox_DIR}/vox.h
