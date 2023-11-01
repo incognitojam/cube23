@@ -4,10 +4,12 @@
 #include <iostream>
 
 namespace Vox {
+    Application::Application() {
+        mWindow = std::unique_ptr<Window>(Window::create());
+    }
 
-    Application::Application() {}
-
-    Application::~Application() {}
+    Application::~Application() {
+    }
 
     void Application::run() {
         WindowResizeEvent e(1280, 720);
@@ -18,7 +20,10 @@ namespace Vox {
             std::cout << e << std::endl;
         }
 
-        while (true);
+        while (mRunning) {
+            glClearColor(0.5f, 0.0f, 0.5f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT);
+            mWindow->onUpdate();
+        }
     }
-
 }
