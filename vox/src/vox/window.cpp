@@ -78,6 +78,13 @@ namespace Vox {
             }
         });
 
+        glfwSetCharCallback(mWindow, [](GLFWwindow *window, unsigned int keycode) {
+            Window &data = *(Window *) glfwGetWindowUserPointer(window);
+
+            KeyTypedEvent event(keycode);
+            data.mEventCallback(event);
+        });
+
         glfwSetMouseButtonCallback(mWindow, [](GLFWwindow *window, int button, int action, int mods) {
             Window &data = *(Window *) glfwGetWindowUserPointer(window);
 

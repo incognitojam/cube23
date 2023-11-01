@@ -10,7 +10,7 @@ namespace Vox {
         None = 0,
         WindowMoved, WindowResize, WindowFocus, WindowLostFocus, WindowClose,
         AppTick, AppUpdate, AppRender,
-        KeyPressed, KeyReleased,
+        KeyPressed, KeyReleased, KeyTyped,
         MouseMoved, MouseButtonPressed, MouseButtonReleased, MouseScrolled,
     };
 

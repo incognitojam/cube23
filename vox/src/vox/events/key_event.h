@@ -7,23 +7,23 @@
 namespace Vox {
     class KeyEvent : public Event {
     public:
-        [[nodiscard]] inline int getKeyCode() const { return mKeyCode; }
+        [[nodiscard]] inline unsigned int getKeyCode() const { return mKeyCode; }
 
         EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
 
     protected:
-        explicit KeyEvent(int keyCode)
+        explicit KeyEvent(unsigned int keyCode)
             : mKeyCode(keyCode) {}
 
-        int mKeyCode;
+        unsigned int mKeyCode;
     };
 
     class KeyPressedEvent : public KeyEvent {
     public:
-        KeyPressedEvent(int keyCode, int repeatCount) :
+        KeyPressedEvent(unsigned int keyCode, unsigned int repeatCount) :
             KeyEvent(keyCode), mRepeatCount(repeatCount) {}
 
-        [[nodiscard]] inline int getRepeatCount() const { return mRepeatCount; }
+        [[nodiscard]] inline unsigned int getRepeatCount() const { return mRepeatCount; }
 
         [[nodiscard]] std::string toString() const override {
             std::stringstream ss;
@@ -34,12 +34,12 @@ namespace Vox {
         EVENT_CLASS_TYPE(KeyPressed)
 
     private:
-        int mRepeatCount;
+        unsigned int mRepeatCount;
     };
 
     class KeyReleasedEvent : public KeyEvent {
     public:
-        explicit KeyReleasedEvent(int keyCode) :
+        explicit KeyReleasedEvent(unsigned int keyCode) :
             KeyEvent(keyCode) {}
 
         [[nodiscard]] std::string toString() const override {
@@ -49,5 +49,19 @@ namespace Vox {
         }
 
         EVENT_CLASS_TYPE(KeyReleased)
+    };
+
+    class KeyTypedEvent : public KeyEvent {
+    public:
+        explicit KeyTypedEvent(unsigned int keyCode) :
+            KeyEvent(keyCode) {}
+
+        [[nodiscard]] std::string toString() const override {
+            std::stringstream ss;
+            ss << "KeyTypedEvent: " << mKeyCode;
+            return ss.str();
+        }
+
+        EVENT_CLASS_TYPE(KeyTyped)
     };
 }
