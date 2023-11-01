@@ -54,20 +54,20 @@ namespace Vox {
 
     class MouseButtonEvent : public Event {
     public:
-        [[nodiscard]] inline int getMouseButton() const { return mButton; }
+        [[nodiscard]] inline unsigned int getMouseButton() const { return mButton; }
 
         EVENT_CLASS_CATEGORY(EventCategoryMouseButton | EventCategoryInput)
 
     protected:
-        explicit MouseButtonEvent(int button)
+        explicit MouseButtonEvent(unsigned int button)
             : mButton(button) {}
 
-        int mButton;
+        unsigned int mButton;
     };
 
     class MouseButtonPressedEvent : public MouseButtonEvent {
     public:
-        explicit MouseButtonPressedEvent(int button)
+        explicit MouseButtonPressedEvent(unsigned int button)
             : MouseButtonEvent(button) {}
 
         [[nodiscard]] std::string toString() const override {
@@ -81,7 +81,7 @@ namespace Vox {
 
     class MouseButtonReleasedEvent : public MouseButtonEvent {
     public:
-        explicit MouseButtonReleasedEvent(int button)
+        explicit MouseButtonReleasedEvent(unsigned int button)
             : MouseButtonEvent(button) {}
 
         [[nodiscard]] std::string toString() const override {
