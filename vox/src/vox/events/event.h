@@ -56,7 +56,7 @@ namespace Vox {
 
         template<typename T>
         bool dispatch(EventFn<T> func) {
-            if (mEvent.getEventType() == T::getStatictype()) {
+            if (mEvent.getEventType() == T::getStaticType()) {
                 mEvent.mHandled = func(*(T *) &mEvent);
                 return true;
             }
