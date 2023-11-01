@@ -1,8 +1,13 @@
 #include "vox/window.h"
 
 #include <stdexcept>
+#include <iostream>
 
 namespace Vox {
+    static void GLFWErrorCallback(int error, const char *description) {
+        std::cerr << "GLFW Error (" << error << "): " << description << std::endl;
+    }
+
     Window *Window::create(const std::string &title, int width, int height) {
         static bool s_GLFWInitialized = false;
 
@@ -11,6 +16,7 @@ namespace Vox {
             if (glfwInit() != GLFW_TRUE) {
                 throw std::runtime_error("Failed to initialize GLFW!");
             }
+            glfwSetErrorCallback(GLFWErrorCallback);
             s_GLFWInitialized = true;
         }
 
