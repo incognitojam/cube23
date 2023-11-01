@@ -32,6 +32,8 @@ set(Vox_SOURCES
         ${Vox_DIR}/vox/entry_point.h
         ${Vox_DIR}/vox/input.cpp
         ${Vox_DIR}/vox/input.h
+        ${Vox_DIR}/vox/key_codes.h
+        ${Vox_DIR}/vox/mouse_button_codes.h
         ${Vox_DIR}/vox/window.cpp
         ${Vox_DIR}/vox/window.h
         ${Vox_DIR}/vox.h
