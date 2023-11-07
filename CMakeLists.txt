@@ -21,9 +21,6 @@ include_directories(${GLM_DIR})
 set(STB_DIR "../../Libraries/stb")
 include_directories(${STB_DIR})
 
-find_package(OpenGL REQUIRED)
-include_directories(${OPENGL_INCLUDE_DIRS})
-
 set(Vox_DIR ${CMAKE_CURRENT_LIST_DIR}/vox/src)
 set(Vox_SOURCES
         ${Vox_DIR}/vox/events/event.h
@@ -44,7 +41,8 @@ set(Vox_SOURCES
 
 add_library(vox STATIC ${Vox_SOURCES})
 target_include_directories(vox PUBLIC ${Vox_DIR})
-target_link_libraries(vox ${Vulkan_LIBRARIES} glfw glad ${OPENGL_LIBRARIES})
+target_link_libraries(vox ${Vulkan_LIBRARIES} glfw glad)
+target_compile_definitions(vox PRIVATE GLFW_INCLUDE_NONE)
 
 set(Cube_DIR ${CMAKE_CURRENT_LIST_DIR}/cube23/src)
 set(Cube_SOURCES
@@ -52,4 +50,5 @@ set(Cube_SOURCES
 )
 add_executable(cube23 ${Cube_SOURCES})
 target_include_directories(cube23 PUBLIC ${Vox_DIR})
-target_link_libraries(cube23 vox ${Vulkan_LIBRARIES} glfw glad ${OPENGL_LIBRARIES})
+target_link_libraries(cube23 vox ${Vulkan_LIBRARIES} glfw glad)
+target_compile_definitions(cube23 PRIVATE GLFW_INCLUDE_NONE)

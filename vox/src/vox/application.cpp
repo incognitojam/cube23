@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include <glad/glad.h>
+
 #include "vox/input.h"
 #include "vox/key_codes.h"
 

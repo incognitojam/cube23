@@ -1,5 +1,7 @@
 #include "vox/window.h"
 
+#include <glad/glad.h>
+
 #include <stdexcept>
 #include <iostream>
 
@@ -35,6 +37,11 @@ namespace Vox {
         }
 
         glfwMakeContextCurrent(mWindow);
+        int status = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
+        if (!status) {
+            glfwTerminate();
+            throw std::runtime_error("Failed to initialize glad!");
+        }
         glfwSetWindowUserPointer(mWindow, this);
         setVSync(true);
 
