@@ -1,0 +1,4 @@
+[submodule "vox/vendor/glfw"]
+	path = vox/vendor/glfw
+	url = https://github.com/glfw/glfw.git
+	branch = 3.3-stable
