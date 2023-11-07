@@ -2,3 +2,6 @@
 	path = vox/vendor/glfw
 	url = https://github.com/glfw/glfw.git
 	branch = 3.3-stable
+[submodule "vox/vendor/glm"]
+	path = vox/vendor/glm
+	url = https://github.com/g-truc/glm.git

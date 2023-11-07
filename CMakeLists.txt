@@ -15,8 +15,7 @@ add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/vox/vendor/glfw)
 
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/vox/vendor/glad)
 
-set(GLM_DIR "../../Libraries/glm")
-include_directories(${GLM_DIR})
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/vox/vendor/glm)
 
 set(STB_DIR "../../Libraries/stb")
 include_directories(${STB_DIR})
