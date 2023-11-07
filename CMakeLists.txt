@@ -13,6 +13,8 @@ set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/vox/vendor/glfw)
 
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/vox/vendor/glad)
+
 set(GLM_DIR "../../Libraries/glm")
 include_directories(${GLM_DIR})
 
@@ -42,7 +44,7 @@ set(Vox_SOURCES
 
 add_library(vox STATIC ${Vox_SOURCES})
 target_include_directories(vox PUBLIC ${Vox_DIR})
-target_link_libraries(vox ${Vulkan_LIBRARIES} glfw ${OPENGL_LIBRARIES})
+target_link_libraries(vox ${Vulkan_LIBRARIES} glfw glad ${OPENGL_LIBRARIES})
 
 set(Cube_DIR ${CMAKE_CURRENT_LIST_DIR}/cube23/src)
 set(Cube_SOURCES
@@ -50,4 +52,4 @@ set(Cube_SOURCES
 )
 add_executable(cube23 ${Cube_SOURCES})
 target_include_directories(cube23 PUBLIC ${Vox_DIR})
-target_link_libraries(cube23 vox ${Vulkan_LIBRARIES} glfw ${OPENGL_LIBRARIES})
+target_link_libraries(cube23 vox ${Vulkan_LIBRARIES} glfw glad ${OPENGL_LIBRARIES})
