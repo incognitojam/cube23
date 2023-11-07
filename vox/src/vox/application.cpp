@@ -29,6 +29,13 @@ namespace Vox {
         while (mRunning) {
             glClearColor(0.5f, 0.0f, 0.5f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
+
+            glBegin(GL_TRIANGLES);
+            glVertex2f(-0.5f, -0.5f);
+            glVertex2f(0.0f, 0.5f);
+            glVertex2f(0.5f, -0.5f);
+            glEnd();
+
             mWindow->onUpdate();
 
             if (Vox::Input::isKeyPressed(VX_KEY_TAB))
