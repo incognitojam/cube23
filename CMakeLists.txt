@@ -17,8 +17,7 @@ add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/vox/vendor/glad)
 
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/vox/vendor/glm)
 
-set(STB_DIR "../../Libraries/stb")
-include_directories(${STB_DIR})
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/vox/vendor/stb)
 
 set(Vox_DIR ${CMAKE_CURRENT_LIST_DIR}/vox/src)
 set(Vox_SOURCES
@@ -40,14 +39,13 @@ set(Vox_SOURCES
 
 add_library(vox STATIC ${Vox_SOURCES})
 target_include_directories(vox PUBLIC ${Vox_DIR})
-target_link_libraries(vox ${Vulkan_LIBRARIES} glfw glad)
-target_compile_definitions(vox PRIVATE GLFW_INCLUDE_NONE)
+target_compile_definitions(vox PUBLIC GLFW_INCLUDE_NONE)
+target_link_libraries(vox PUBLIC ${Vulkan_LIBRARIES} glfw glad glm stb)
 
 set(Cube_DIR ${CMAKE_CURRENT_LIST_DIR}/cube23/src)
 set(Cube_SOURCES
         ${Cube_DIR}/cube_app.cpp
 )
 add_executable(cube23 ${Cube_SOURCES})
-target_include_directories(cube23 PUBLIC ${Vox_DIR})
-target_link_libraries(cube23 vox ${Vulkan_LIBRARIES} glfw glad)
-target_compile_definitions(cube23 PRIVATE GLFW_INCLUDE_NONE)
+target_include_directories(cube23 PRIVATE ${Vox_DIR})
+target_link_libraries(cube23 PRIVATE vox)
