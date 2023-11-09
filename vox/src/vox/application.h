@@ -4,6 +4,7 @@
 
 #include "vox/events/application_event.h"
 #include "vox/events/event.h"
+#include "vox/renderer/buffer.h"
 #include "vox/renderer/shader.h"
 #include "vox/window.h"
 
@@ -27,8 +28,10 @@ namespace Vox {
         std::unique_ptr<Window> mWindow;
         bool mRunning = true;
 
-        unsigned int mVertexArray, mVertexBuffer, mIndexBuffer;
+        unsigned int mVertexArray;
         std::unique_ptr<Shader> mShader;
+        std::unique_ptr<VertexBuffer> mVertexBuffer;
+        std::unique_ptr<IndexBuffer> mIndexBuffer;
 
     private:
         static Application *sInstance;

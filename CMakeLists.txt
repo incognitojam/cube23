@@ -24,7 +24,11 @@ set(Vox_SOURCES
         ${Vox_DIR}/vox/events/event.h
         ${Vox_DIR}/vox/events/key_event.h
         ${Vox_DIR}/vox/events/mouse_event.h
+        ${Vox_DIR}/vox/renderer/buffer.cpp
+        ${Vox_DIR}/vox/renderer/buffer.h
         ${Vox_DIR}/vox/renderer/graphics_context.h
+        ${Vox_DIR}/vox/renderer/renderer.cpp
+        ${Vox_DIR}/vox/renderer/renderer.h
         ${Vox_DIR}/vox/renderer/shader.cpp
         ${Vox_DIR}/vox/renderer/shader.h
         ${Vox_DIR}/vox/application.cpp
@@ -39,6 +43,8 @@ set(Vox_SOURCES
         ${Vox_DIR}/vox/window.h
         ${Vox_DIR}/vox.h
 
+        ${Vox_DIR}/platform/opengl/buffer.cpp
+        ${Vox_DIR}/platform/opengl/buffer.h
         ${Vox_DIR}/platform/opengl/context.cpp
         ${Vox_DIR}/platform/opengl/context.h
 )
