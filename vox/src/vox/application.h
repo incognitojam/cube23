@@ -28,8 +28,8 @@ namespace Vox {
         std::unique_ptr<Window> mWindow;
         bool mRunning = true;
 
-        std::unique_ptr<Shader> mShader;
-        std::unique_ptr<VertexArray> mVertexArray;
+        std::shared_ptr<Shader> mShader;
+        std::shared_ptr<VertexArray> mVertexArray;
 
     private:
         static Application *sInstance;

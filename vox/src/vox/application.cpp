@@ -3,11 +3,10 @@
 #include <iostream>
 #include <memory>
 
-#include <glad/glad.h>
-
 #include "vox/input.h"
 #include "vox/key_codes.h"
 #include "vox/renderer/buffer.h"
+#include "vox/renderer/renderer.h"
 
 namespace Vox {
     Application *Application::sInstance = nullptr;
@@ -79,12 +78,16 @@ void main() {
 
     void Application::run() {
         while (mRunning) {
-            glClearColor(0.1f, 0.1f, 0.1f, 1);
-            glClear(GL_COLOR_BUFFER_BIT);
+            RenderCommand::setClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
+            RenderCommand::clear();
+
+            Renderer::beginScene();
 
             mShader->bind();
             mVertexArray->bind();
-            glDrawElements(GL_TRIANGLES, mVertexArray->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
+            Renderer::submit(mVertexArray);
+
+            Renderer::endScene();
 
             mWindow->onUpdate();
 

@@ -1,16 +1,15 @@
 #pragma once
 
-namespace Vox {
-    enum class RendererAPI {
-        None = 0,
-        OpenGL = 1,
-    };
+#include "vox/renderer/render_command.h"
 
+namespace Vox {
     class Renderer {
     public:
-        inline static RendererAPI getApi() { return sRendererApi; }
+        static void beginScene();
+        static void endScene();
 
-    private:
-        static RendererAPI sRendererApi;
+        static void submit(const std::shared_ptr<VertexArray> &vertexArray);
+
+        static RendererAPI::API getAPI() { return RendererAPI::getAPI(); }
     };
 }

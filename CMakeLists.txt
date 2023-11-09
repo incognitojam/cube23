@@ -27,8 +27,12 @@ set(Vox_SOURCES
         vox/src/vox/renderer/buffer.cpp
         vox/src/vox/renderer/buffer.h
         vox/src/vox/renderer/graphics_context.h
+        vox/src/vox/renderer/render_command.cpp
+        vox/src/vox/renderer/render_command.h
         vox/src/vox/renderer/renderer.cpp
         vox/src/vox/renderer/renderer.h
+        vox/src/vox/renderer/renderer_api.cpp
+        vox/src/vox/renderer/renderer_api.h
         vox/src/vox/renderer/shader.cpp
         vox/src/vox/renderer/shader.h
         vox/src/vox/renderer/vertex_array.cpp
@@ -49,6 +53,8 @@ set(Vox_SOURCES
         vox/src/platform/opengl/buffer.h
         vox/src/platform/opengl/context.cpp
         vox/src/platform/opengl/context.h
+        vox/src/platform/opengl/renderer_api.cpp
+        vox/src/platform/opengl/renderer_api.h
         vox/src/platform/opengl/vertex_array.cpp
         vox/src/platform/opengl/vertex_array.h
 )

@@ -8,10 +8,10 @@
 
 namespace Vox {
     VertexBuffer *VertexBuffer::create(float *vertices, uint32_t size) {
-        switch (Renderer::getApi()) {
-            case RendererAPI::None:
+        switch (Renderer::getAPI()) {
+            case RendererAPI::API::None:
                 throw std::runtime_error("RendererAPI::None is currently not supported!");
-            case RendererAPI::OpenGL:
+            case RendererAPI::API::OpenGL:
                 return new OpenGLVertexBuffer(vertices, size);
             default:
                 throw std::runtime_error("Unknown RendererAPI!");
@@ -19,10 +19,10 @@ namespace Vox {
     }
 
     IndexBuffer *IndexBuffer::create(uint32_t *indices, uint32_t count) {
-        switch (Renderer::getApi()) {
-            case RendererAPI::None:
+        switch (Renderer::getAPI()) {
+            case RendererAPI::API::None:
                 throw std::runtime_error("RendererAPI::None is currently not supported!");
-            case RendererAPI::OpenGL:
+            case RendererAPI::API::OpenGL:
                 return new OpenGLIndexBuffer(indices, count);
             default:
                 throw std::runtime_error("Unknown RendererAPI!");
