@@ -24,6 +24,7 @@ set(Vox_SOURCES
         ${Vox_DIR}/vox/events/event.h
         ${Vox_DIR}/vox/events/key_event.h
         ${Vox_DIR}/vox/events/mouse_event.h
+        ${Vox_DIR}/vox/renderer/graphics_context.h
         ${Vox_DIR}/vox/application.cpp
         ${Vox_DIR}/vox/application.h
         ${Vox_DIR}/vox/core.h
@@ -35,6 +36,9 @@ set(Vox_SOURCES
         ${Vox_DIR}/vox/window.cpp
         ${Vox_DIR}/vox/window.h
         ${Vox_DIR}/vox.h
+
+        ${Vox_DIR}/platform/opengl/opengl_context.cpp
+        ${Vox_DIR}/platform/opengl/opengl_context.h
 )
 
 add_library(vox STATIC ${Vox_SOURCES})

@@ -6,6 +6,7 @@
 #include <string>
 
 #include "vox/events/event.h"
+#include "vox/renderer/graphics_context.h"
 
 namespace Vox {
     class Window {
@@ -32,6 +33,7 @@ namespace Vox {
 
     private:
         GLFWwindow *mWindow;
+        GraphicsContext *mContext;
 
         std::string mTitle;
         int mWidth, mHeight;

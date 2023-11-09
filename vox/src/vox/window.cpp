@@ -9,6 +9,8 @@
 #include "vox/events/mouse_event.h"
 #include "vox/events/key_event.h"
 
+#include "platform/opengl/opengl_context.h"
+
 namespace Vox {
     static void GLFWErrorCallback(int error, const char *description) {
         std::cerr << "GLFW Error (" << error << "): " << description << std::endl;
@@ -35,6 +37,9 @@ namespace Vox {
             glfwTerminate();
             throw std::runtime_error("Failed to create GLFW window!");
         }
+
+        mContext = new OpenGLContext(mWindow);
+        mContext->init();
 
         glfwMakeContextCurrent(mWindow);
         int status = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
@@ -132,7 +137,7 @@ namespace Vox {
 
     void Window::onUpdate() {
         glfwPollEvents();
-        glfwSwapBuffers(mWindow);
+        mContext->swapBuffers();
     }
 
     void Window::setVSync(bool enabled) {
