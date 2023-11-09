@@ -1,16 +1,15 @@
 #include "vox/renderer/shader.h"
 
 #include <fstream>
-#include <stdexcept>
-#include <sstream>
 #include <vector>
 
 #include <glad/glad.h>
 
-namespace Vox {
+#include <glm/gtc/type_ptr.hpp>
 
+namespace Vox {
     Shader::Shader(const std::string &vertexSrc, const std::string &fragmentSrc) {
-        GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+        const GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
         const GLchar *source = vertexSrc.c_str();
         glShaderSource(vertexShader, 1, &source, 0);
         glCompileShader(vertexShader);
@@ -30,7 +29,7 @@ namespace Vox {
             return;
         }
 
-        GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+        const GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
         source = fragmentSrc.c_str();
         glShaderSource(fragmentShader, 1, &source, 0);
         glCompileShader(fragmentShader);
@@ -86,5 +85,10 @@ namespace Vox {
 
     void Shader::unbind() const {
         glUseProgram(0);
+    }
+
+    void Shader::uploadUniformMat4(const std::string &name, const glm::mat4 &matrix) const {
+        const GLint location = glGetUniformLocation(mRendererID, name.c_str());
+        glUniformMatrix4fv(location, 1, GL_FALSE, value_ptr(matrix));
     }
 }

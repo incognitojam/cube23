@@ -11,7 +11,8 @@
 namespace Vox {
     Application *Application::sInstance = nullptr;
 
-    Application::Application() {
+    Application::Application()
+        : mCamera(-1.6f, 1.6f, -0.9f, 0.9f) {
         if (sInstance != nullptr) {
             throw std::runtime_error("Application already exists!");
         }
@@ -47,13 +48,15 @@ namespace Vox {
 layout (location = 0) in vec3 a_Position;
 layout (location = 1) in vec4 a_Color;
 
+uniform mat4 u_ViewProjection;
+
 out vec3 v_Position;
 out vec4 v_Color;
 
 void main() {
     v_Position = a_Position;
     v_Color = a_Color;
-    gl_Position = vec4(a_Position, 1.0);
+    gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
 }
 )";
         std::string fragmentSrc = R"(#version 330 core
@@ -77,15 +80,18 @@ void main() {
     }
 
     void Application::run() {
+        static float rotation = 0.0f;
         while (mRunning) {
             RenderCommand::setClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
             RenderCommand::clear();
 
-            Renderer::beginScene();
+            rotation += 0.5f;
+            mCamera.setPosition({ 0.5f, 0.5f, 0.0f });
+            mCamera.setRotation(rotation);
 
-            mShader->bind();
-            mVertexArray->bind();
-            Renderer::submit(mVertexArray);
+            Renderer::beginScene(mCamera);
+
+            Renderer::submit(mShader, mVertexArray);
 
             Renderer::endScene();
 

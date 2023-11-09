@@ -4,6 +4,7 @@
 
 #include "vox/events/application_event.h"
 #include "vox/events/event.h"
+#include "vox/renderer/orthographic_camera.h"
 #include "vox/renderer/shader.h"
 #include "vox/renderer/vertex_array.h"
 #include "vox/window.h"
@@ -18,9 +19,9 @@ namespace Vox {
 
         void onEvent(Event &);
 
-        inline Window &getWindow() { return *mWindow; }
+        Window &getWindow() const { return *mWindow; }
 
-        inline static Application &get() { return *sInstance; }
+        static Application &get() { return *sInstance; }
 
     private:
         bool onWindowClose(WindowCloseEvent &);
@@ -31,7 +32,8 @@ namespace Vox {
         std::shared_ptr<Shader> mShader;
         std::shared_ptr<VertexArray> mVertexArray;
 
-    private:
+        OrthographicCamera mCamera;
+
         static Application *sInstance;
     };
 

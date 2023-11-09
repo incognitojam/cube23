@@ -27,6 +27,8 @@ set(Vox_SOURCES
         vox/src/vox/renderer/buffer.cpp
         vox/src/vox/renderer/buffer.h
         vox/src/vox/renderer/graphics_context.h
+        vox/src/vox/renderer/orthographic_camera.cpp
+        vox/src/vox/renderer/orthographic_camera.h
         vox/src/vox/renderer/render_command.cpp
         vox/src/vox/renderer/render_command.h
         vox/src/vox/renderer/renderer.cpp
