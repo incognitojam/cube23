@@ -11,42 +11,42 @@ include_directories(${Vulkan_INCLUDE_DIRS})
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/vox/vendor/glfw)
+add_subdirectory(vox/vendor/glfw)
 
-add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/vox/vendor/glad)
+add_subdirectory(vox/vendor/glad)
 
-add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/vox/vendor/glm)
+add_subdirectory(vox/vendor/glm)
 
-add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/vox/vendor/stb)
+add_subdirectory(vox/vendor/stb)
 
-set(Vox_DIR ${CMAKE_CURRENT_LIST_DIR}/vox/src)
+set(Vox_DIR vox/src)
 set(Vox_SOURCES
-        ${Vox_DIR}/vox/events/event.h
-        ${Vox_DIR}/vox/events/key_event.h
-        ${Vox_DIR}/vox/events/mouse_event.h
-        ${Vox_DIR}/vox/renderer/buffer.cpp
-        ${Vox_DIR}/vox/renderer/buffer.h
-        ${Vox_DIR}/vox/renderer/graphics_context.h
-        ${Vox_DIR}/vox/renderer/renderer.cpp
-        ${Vox_DIR}/vox/renderer/renderer.h
-        ${Vox_DIR}/vox/renderer/shader.cpp
-        ${Vox_DIR}/vox/renderer/shader.h
-        ${Vox_DIR}/vox/application.cpp
-        ${Vox_DIR}/vox/application.h
-        ${Vox_DIR}/vox/core.h
-        ${Vox_DIR}/vox/entry_point.h
-        ${Vox_DIR}/vox/input.cpp
-        ${Vox_DIR}/vox/input.h
-        ${Vox_DIR}/vox/key_codes.h
-        ${Vox_DIR}/vox/mouse_button_codes.h
-        ${Vox_DIR}/vox/window.cpp
-        ${Vox_DIR}/vox/window.h
-        ${Vox_DIR}/vox.h
+        vox/src/vox/events/event.h
+        vox/src/vox/events/key_event.h
+        vox/src/vox/events/mouse_event.h
+        vox/src/vox/renderer/buffer.cpp
+        vox/src/vox/renderer/buffer.h
+        vox/src/vox/renderer/graphics_context.h
+        vox/src/vox/renderer/renderer.cpp
+        vox/src/vox/renderer/renderer.h
+        vox/src/vox/renderer/shader.cpp
+        vox/src/vox/renderer/shader.h
+        vox/src/vox/application.cpp
+        vox/src/vox/application.h
+        vox/src/vox/core.h
+        vox/src/vox/entry_point.h
+        vox/src/vox/input.cpp
+        vox/src/vox/input.h
+        vox/src/vox/key_codes.h
+        vox/src/vox/mouse_button_codes.h
+        vox/src/vox/window.cpp
+        vox/src/vox/window.h
+        vox/src/vox.h
 
-        ${Vox_DIR}/platform/opengl/buffer.cpp
-        ${Vox_DIR}/platform/opengl/buffer.h
-        ${Vox_DIR}/platform/opengl/context.cpp
-        ${Vox_DIR}/platform/opengl/context.h
+        vox/src/platform/opengl/buffer.cpp
+        vox/src/platform/opengl/buffer.h
+        vox/src/platform/opengl/context.cpp
+        vox/src/platform/opengl/context.h
 )
 
 add_library(vox STATIC ${Vox_SOURCES})
@@ -54,9 +54,9 @@ target_include_directories(vox PUBLIC ${Vox_DIR})
 target_compile_definitions(vox PUBLIC GLFW_INCLUDE_NONE)
 target_link_libraries(vox PUBLIC ${Vulkan_LIBRARIES} glfw glad glm stb)
 
-set(Cube_DIR ${CMAKE_CURRENT_LIST_DIR}/cube23/src)
+set(Cube_DIR cube23/src)
 set(Cube_SOURCES
-        ${Cube_DIR}/cube_app.cpp
+        cube23/src/cube_app.cpp
 )
 add_executable(cube23 ${Cube_SOURCES})
 target_include_directories(cube23 PRIVATE ${Vox_DIR})
