@@ -18,6 +18,29 @@ namespace Vox {
 
         mWindow = std::unique_ptr<Window>(Window::create());
         mWindow->setEventCallback(VX_BIND_EVENT_FN(Application::onEvent));
+
+        glGenVertexArrays(1, &mVertexArray);
+        glBindVertexArray(mVertexArray);
+
+        glGenBuffers(1, &mVertexBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
+
+        float vertices[3 * 3] = {
+            -0.5f, -0.5f, 0.0f,
+            0.5f, -0.5f, 0.0f,
+            0.0f, 0.5f, 0.0f
+        };
+
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+
+        glGenBuffers(1, &mIndexBuffer);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIndexBuffer);
+
+        unsigned int indices[3] = {0, 1, 2};
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
     }
 
     void Application::onEvent(Event &e) {
@@ -27,14 +50,11 @@ namespace Vox {
 
     void Application::run() {
         while (mRunning) {
-            glClearColor(0.5f, 0.0f, 0.5f, 1.0f);
+            glClearColor(0.1f, 0.1f, 0.1f, 1);
             glClear(GL_COLOR_BUFFER_BIT);
 
-            glBegin(GL_TRIANGLES);
-            glVertex2f(-0.5f, -0.5f);
-            glVertex2f(0.0f, 0.5f);
-            glVertex2f(0.5f, -0.5f);
-            glEnd();
+            glBindVertexArray(mVertexArray);
+            glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
 
             mWindow->onUpdate();
 

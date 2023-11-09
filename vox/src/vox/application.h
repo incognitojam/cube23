@@ -26,6 +26,8 @@ namespace Vox {
         std::unique_ptr<Window> mWindow;
         bool mRunning = true;
 
+        unsigned int mVertexArray, mVertexBuffer, mIndexBuffer;
+
     private:
         static Application *sInstance;
     };
