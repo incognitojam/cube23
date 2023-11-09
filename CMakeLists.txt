@@ -25,6 +25,8 @@ set(Vox_SOURCES
         ${Vox_DIR}/vox/events/key_event.h
         ${Vox_DIR}/vox/events/mouse_event.h
         ${Vox_DIR}/vox/renderer/graphics_context.h
+        ${Vox_DIR}/vox/renderer/shader.cpp
+        ${Vox_DIR}/vox/renderer/shader.h
         ${Vox_DIR}/vox/application.cpp
         ${Vox_DIR}/vox/application.h
         ${Vox_DIR}/vox/core.h
