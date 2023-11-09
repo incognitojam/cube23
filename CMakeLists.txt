@@ -39,8 +39,8 @@ set(Vox_SOURCES
         ${Vox_DIR}/vox/window.h
         ${Vox_DIR}/vox.h
 
-        ${Vox_DIR}/platform/opengl/opengl_context.cpp
-        ${Vox_DIR}/platform/opengl/opengl_context.h
+        ${Vox_DIR}/platform/opengl/context.cpp
+        ${Vox_DIR}/platform/opengl/context.h
 )
 
 add_library(vox STATIC ${Vox_SOURCES})

@@ -1,4 +1,4 @@
-#include "platform/opengl/opengl_context.h"
+#include "platform/opengl/context.h"
 
 #include <stdexcept>
 

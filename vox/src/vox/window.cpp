@@ -9,7 +9,7 @@
 #include "vox/events/mouse_event.h"
 #include "vox/events/key_event.h"
 
-#include "platform/opengl/opengl_context.h"
+#include "platform/opengl/context.h"
 
 namespace Vox {
     static void GLFWErrorCallback(int error, const char *description) {
