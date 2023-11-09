@@ -7,27 +7,10 @@
 
 #include "vox/input.h"
 #include "vox/key_codes.h"
+#include "vox/renderer/buffer.h"
 
 namespace Vox {
     Application *Application::sInstance = nullptr;
-
-    static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type) {
-        switch (type) {
-            case ShaderDataType::Float:
-            case ShaderDataType::Float2:
-            case ShaderDataType::Float3:
-            case ShaderDataType::Float4:
-            case ShaderDataType::Mat3:
-            case ShaderDataType::Mat4: return GL_FLOAT;
-            case ShaderDataType::Int:
-            case ShaderDataType::Int2:
-            case ShaderDataType::Int3:
-            case ShaderDataType::Int4: return GL_INT;
-            case ShaderDataType::Bool: return GL_BOOL;
-            default:
-                throw std::runtime_error("Unknown ShaderDataType!");
-        }
-    }
 
     Application::Application() {
         if (sInstance != nullptr) {
@@ -38,38 +21,27 @@ namespace Vox {
         mWindow = std::unique_ptr<Window>(Window::create());
         mWindow->setEventCallback(VX_BIND_EVENT_FN(Application::onEvent));
 
-        glGenVertexArrays(1, &mVertexArray);
-        glBindVertexArray(mVertexArray);
+        mVertexArray.reset(VertexArray::create());
 
         float vertices[3 * 7] = {
             -0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
              0.5f, -0.5f, 0.0f, 0.2f, 0.3f, 0.8f, 1.0f,
              0.0f,  0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f
         };
-        mVertexBuffer.reset(VertexBuffer::create(vertices, sizeof(vertices)));
-        {
-            BufferLayout layout = {
-                { ShaderDataType::Float3, "a_Position" },
-                { ShaderDataType::Float4, "a_Color" }
-            };
-            mVertexBuffer->setLayout(layout);
-        }
 
-        uint32_t index = 0;
-        const auto &layout = mVertexBuffer->getLayout();
-        for (const auto &element : layout) {
-            glEnableVertexAttribArray(index);
-            glVertexAttribPointer(index,
-                                  element.getComponentCount(),
-                                  ShaderDataTypeToOpenGLBaseType(element.type),
-                                  element.normalized ? GL_TRUE : GL_FALSE,
-                                  layout.getStride(),
-                                  (const void *)element.offset);
-            index++;
-        }
+        std::shared_ptr<VertexBuffer> vertexBuffer;
+        vertexBuffer.reset(VertexBuffer::create(vertices, sizeof(vertices)));
+        BufferLayout layout = {
+            { ShaderDataType::Float3, "a_Position" },
+            { ShaderDataType::Float4, "a_Color" }
+        };
+        vertexBuffer->setLayout(layout);
+        mVertexArray->addVertexBuffer(vertexBuffer);
 
         uint32_t indices[3] = {0, 1, 2};
-        mIndexBuffer.reset(IndexBuffer::create(indices, sizeof(indices) / sizeof(uint32_t)));
+        std::shared_ptr<IndexBuffer> indexBuffer;
+        indexBuffer.reset(IndexBuffer::create(indices, sizeof(indices) / sizeof(uint32_t)));
+        mVertexArray->setIndexBuffer(indexBuffer);
 
         std::string vertexSrc = R"(#version 330 core
 
@@ -111,8 +83,8 @@ void main() {
             glClear(GL_COLOR_BUFFER_BIT);
 
             mShader->bind();
-            glBindVertexArray(mVertexArray);
-            glDrawElements(GL_TRIANGLES, mIndexBuffer->getCount(), GL_UNSIGNED_INT, nullptr);
+            mVertexArray->bind();
+            glDrawElements(GL_TRIANGLES, mVertexArray->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
 
             mWindow->onUpdate();
 

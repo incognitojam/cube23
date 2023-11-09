@@ -31,6 +31,8 @@ set(Vox_SOURCES
         vox/src/vox/renderer/renderer.h
         vox/src/vox/renderer/shader.cpp
         vox/src/vox/renderer/shader.h
+        vox/src/vox/renderer/vertex_array.cpp
+        vox/src/vox/renderer/vertex_array.h
         vox/src/vox/application.cpp
         vox/src/vox/application.h
         vox/src/vox/core.h
@@ -47,6 +49,8 @@ set(Vox_SOURCES
         vox/src/platform/opengl/buffer.h
         vox/src/platform/opengl/context.cpp
         vox/src/platform/opengl/context.h
+        vox/src/platform/opengl/vertex_array.cpp
+        vox/src/platform/opengl/vertex_array.h
 )
 
 add_library(vox STATIC ${Vox_SOURCES})
