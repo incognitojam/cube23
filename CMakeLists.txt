@@ -46,7 +46,6 @@ set(Vox_SOURCES
         vox/src/vox/application.h
         vox/src/vox/core.h
         vox/src/vox/entry_point.h
-        vox/src/vox/input.cpp
         vox/src/vox/input.h
         vox/src/vox/key_codes.h
         vox/src/vox/mouse_button_codes.h

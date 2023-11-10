@@ -2,31 +2,44 @@
 
 #include <utility>
 
-#include "vox/core.h"
+#include "vox/application.h"
 
 namespace Vox {
     class Input {
-    public:
-        static bool isKeyPressed(unsigned int keycode) { return sInstance->isKeyPressedImpl(keycode); }
+    protected:
+        Input() = default;
 
-        inline static bool isMouseButtonPressed(unsigned int button) {
-            return sInstance->isMouseButtonPressedImpl(button);
+    public:
+        Input(const Input &) = delete;
+        Input &operator=(const Input &) = delete;
+
+        static bool isKeyPressed(const unsigned int keycode) {
+            const auto window = static_cast<GLFWwindow *>(Application::get().getWindow().getNativeWindow());
+            const auto state = glfwGetKey(window, keycode);
+            return state == GLFW_PRESS || state == GLFW_REPEAT;
         }
 
-        inline static std::pair<float, float> getMousePosition() { return sInstance->getMousePositionImpl(); }
+        static bool isMouseButtonPressed(const unsigned int button) {
+            const auto window = static_cast<GLFWwindow *>(Application::get().getWindow().getNativeWindow());
+            return glfwGetMouseButton(window, button) == GLFW_PRESS;
+        }
 
-        inline static float getMouseX() { return sInstance->getMouseXImpl(); }
+        static std::pair<float, float> getMousePosition() {
+            const auto window = static_cast<GLFWwindow *>(Application::get().getWindow().getNativeWindow());
+            double xpos, ypos;
+            glfwGetCursorPos(window, &xpos, &ypos);
+            return {xpos, ypos};
+        }
 
-        inline static float getMouseY() { return sInstance->getMouseYImpl(); }
+        static float getMouseX() {
+            auto [x, y] = getMousePosition();
+            return x;
+        }
 
-    protected:
-        bool isKeyPressedImpl(unsigned int keycode);
-
-        bool isMouseButtonPressedImpl(unsigned int button);
-        std::pair<float, float> getMousePositionImpl();
-
-        float getMouseXImpl();
-        float getMouseYImpl();
+        static float getMouseY() {
+            auto [x, y] = getMousePosition();
+            return y;
+        }
 
     private:
         static Input *sInstance;
