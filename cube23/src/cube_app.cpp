@@ -1,5 +1,7 @@
 #include <vox.h>
 
+#include <glm/gtc/matrix_transform.hpp>
+
 #include "platform/opengl/shader.h"
 
 class Cube final : public Vox::Application {
@@ -34,12 +36,13 @@ layout (location = 0) in vec3 a_Position;
 layout (location = 1) in vec2 a_TexCoord;
 
 uniform mat4 u_ViewProjection;
+uniform mat4 u_Transform;
 
 out vec2 v_TexCoord;
 
 void main() {
     v_TexCoord = a_TexCoord;
-    gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
+    gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
 }
 )";
         const std::string fragmentSrc = R"(#version 330 core
@@ -89,7 +92,15 @@ void main() {
         Vox::Renderer::beginScene(mCamera);
 
         mTexture->bind(0);
-        Vox::Renderer::submit(mShader, mVertexArray);
+
+        const glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
+        for (int y = 0; y < 20; y++) {
+            for (int x = 0; x < 20; x++) {
+                glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
+                glm::mat4 transform = translate(glm::mat4(1.0f), pos) * scale;
+                Vox::Renderer::submit(mShader, mVertexArray, transform);
+            }
+        }
 
         Vox::Renderer::endScene();
     }
