@@ -67,7 +67,7 @@ set(Vox_SOURCES
 add_library(vox STATIC ${Vox_SOURCES})
 target_include_directories(vox PUBLIC ${Vox_DIR})
 target_compile_definitions(vox PUBLIC GLFW_INCLUDE_NONE)
-target_link_libraries(vox PUBLIC ${Vulkan_LIBRARIES} glfw glad glm stb)
+target_link_libraries(vox PUBLIC ${Vulkan_LIBRARIES} glfw glad glm stb_image)
 
 set(Cube_DIR cube23/src)
 set(Cube_SOURCES
