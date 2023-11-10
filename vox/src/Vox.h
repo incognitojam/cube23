@@ -14,6 +14,7 @@
 
 #include "vox/renderer/buffer.h"
 #include "vox/renderer/shader.h"
+#include "vox/renderer/texture.h"
 #include "vox/renderer/vertex_array.h"
 
 #include "vox/renderer/orthographic_camera.h"

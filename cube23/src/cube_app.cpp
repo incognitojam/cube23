@@ -1,59 +1,65 @@
 #include <vox.h>
 
+#include "platform/opengl/shader.h"
+
 class Cube final : public Vox::Application {
 public:
     Cube() : mCamera(-1.6f, 1.6f, -0.9f, 0.9f), mCameraPosition(0.0f) {
         mVertexArray.reset(Vox::VertexArray::create());
 
-        float vertices[3 * 7] = {
-            -0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
-             0.5f, -0.5f, 0.0f, 0.2f, 0.3f, 0.8f, 1.0f,
-             0.0f,  0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f
+        float vertices[5 * 4] = {
+            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+             0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+             0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+            -0.5f,  0.5f, 0.0f, 0.0f, 1.0f
         };
 
         std::shared_ptr<Vox::VertexBuffer> vertexBuffer;
         vertexBuffer.reset(Vox::VertexBuffer::create(vertices, sizeof(vertices)));
         Vox::BufferLayout layout = {
             { Vox::ShaderDataType::Float3, "a_Position" },
-            { Vox::ShaderDataType::Float4, "a_Color" }
+            { Vox::ShaderDataType::Float2, "a_TexCoord" }
         };
         vertexBuffer->setLayout(layout);
         mVertexArray->addVertexBuffer(vertexBuffer);
 
-        uint32_t indices[3] = {0, 1, 2};
+        uint32_t indices[6] = {0, 1, 2, 2, 3, 0};
         std::shared_ptr<Vox::IndexBuffer> indexBuffer;
         indexBuffer.reset(Vox::IndexBuffer::create(indices, sizeof(indices) / sizeof(uint32_t)));
         mVertexArray->setIndexBuffer(indexBuffer);
 
-        std::string vertexSrc = R"(#version 330 core
+        const std::string vertexSrc = R"(#version 330 core
 
 layout (location = 0) in vec3 a_Position;
-layout (location = 1) in vec4 a_Color;
+layout (location = 1) in vec2 a_TexCoord;
 
 uniform mat4 u_ViewProjection;
 
-out vec3 v_Position;
-out vec4 v_Color;
+out vec2 v_TexCoord;
 
 void main() {
-    v_Position = a_Position;
-    v_Color = a_Color;
+    v_TexCoord = a_TexCoord;
     gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
 }
 )";
-        std::string fragmentSrc = R"(#version 330 core
+        const std::string fragmentSrc = R"(#version 330 core
 
 layout (location = 0) out vec4 color;
 
-in vec3 v_Position;
-in vec4 v_Color;
+in vec2 v_TexCoord;
+
+uniform sampler2D u_Texture;
 
 void main() {
-    color = vec4(v_Position * 0.5 + 0.5, 1.0);
-    color = v_Color;
+    color = texture(u_Texture, v_TexCoord);
 }
 )";
         mShader.reset(Vox::Shader::create(vertexSrc, fragmentSrc));
+
+        mTexture = Vox::Texture2D::create("textures/texture.jpg");
+
+        mShader->bind();
+        std::dynamic_pointer_cast<Vox::OpenGLShader>(mShader)->uploadUniformInt("u_Texture", 0);
     }
 
     ~Cube() {}
@@ -81,13 +87,18 @@ void main() {
         mCamera.setRotation(mCameraRotation);
 
         Vox::Renderer::beginScene(mCamera);
+
+        mTexture->bind(0);
         Vox::Renderer::submit(mShader, mVertexArray);
+
         Vox::Renderer::endScene();
     }
 
 private:
     std::shared_ptr<Vox::Shader> mShader;
     std::shared_ptr<Vox::VertexArray> mVertexArray;
+
+    std::shared_ptr<Vox::Texture2D> mTexture;
 
     Vox::OrthographicCamera mCamera;
     glm::vec3 mCameraPosition;

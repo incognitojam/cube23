@@ -38,6 +38,8 @@ set(Vox_SOURCES
         vox/src/vox/renderer/renderer_api.h
         vox/src/vox/renderer/shader.cpp
         vox/src/vox/renderer/shader.h
+        vox/src/vox/renderer/texture.cpp
+        vox/src/vox/renderer/texture.h
         vox/src/vox/renderer/vertex_array.cpp
         vox/src/vox/renderer/vertex_array.h
         vox/src/vox/application.cpp
@@ -60,6 +62,8 @@ set(Vox_SOURCES
         vox/src/platform/opengl/renderer_api.h
         vox/src/platform/opengl/shader.cpp
         vox/src/platform/opengl/shader.h
+        vox/src/platform/opengl/texture.cpp
+        vox/src/platform/opengl/texture.h
         vox/src/platform/opengl/vertex_array.cpp
         vox/src/platform/opengl/vertex_array.h
 )
