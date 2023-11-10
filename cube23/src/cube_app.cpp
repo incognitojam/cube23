@@ -53,7 +53,7 @@ void main() {
     color = v_Color;
 }
 )";
-        mShader = std::make_unique<Vox::Shader>(vertexSrc, fragmentSrc);
+        mShader.reset(Vox::Shader::create(vertexSrc, fragmentSrc));
     }
 
     ~Cube() {}

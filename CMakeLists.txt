@@ -58,6 +58,8 @@ set(Vox_SOURCES
         vox/src/platform/opengl/context.h
         vox/src/platform/opengl/renderer_api.cpp
         vox/src/platform/opengl/renderer_api.h
+        vox/src/platform/opengl/shader.cpp
+        vox/src/platform/opengl/shader.h
         vox/src/platform/opengl/vertex_array.cpp
         vox/src/platform/opengl/vertex_array.h
 )
