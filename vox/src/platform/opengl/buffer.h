@@ -5,7 +5,7 @@
 namespace Vox {
     class OpenGLVertexBuffer : public VertexBuffer {
     public:
-        OpenGLVertexBuffer(float *vertices, uint32_t size);
+        OpenGLVertexBuffer(const float *vertices, uint32_t size);
         ~OpenGLVertexBuffer() override;
 
         void bind() const override;
@@ -21,7 +21,7 @@ namespace Vox {
 
     class OpenGLIndexBuffer : public IndexBuffer {
     public:
-        OpenGLIndexBuffer(uint32_t *indices, uint32_t count);
+        OpenGLIndexBuffer(const uint32_t *indices, uint32_t count);
         ~OpenGLIndexBuffer() override;
 
         void bind() const override;
