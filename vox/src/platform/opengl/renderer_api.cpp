@@ -3,6 +3,14 @@
 #include <glad/glad.h>
 
 namespace Vox {
+    void OpenGLRendererAPI::init() {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        // TODO: remove this line
+        glDisable(GL_CULL_FACE);
+    }
+
     void OpenGLRendererAPI::setClearColor(const glm::vec4 &color) {
         glClearColor(color.r, color.g, color.b, color.a);
     }

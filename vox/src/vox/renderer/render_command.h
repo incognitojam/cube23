@@ -5,19 +5,23 @@
 namespace Vox {
     class RenderCommand {
     public:
+        static void init() {
+            sRendererAPI->init();
+        }
+
         static void setClearColor(const glm::vec4 &color) {
-            sRendererApi->setClearColor(color);
+            sRendererAPI->setClearColor(color);
         }
 
         static void clear() {
-            sRendererApi->clear();
+            sRendererAPI->clear();
         }
 
         static void drawIndexed(const std::shared_ptr<VertexArray> &vertexArray) {
-            sRendererApi->drawIndexed(vertexArray);
+            sRendererAPI->drawIndexed(vertexArray);
         }
 
     private:
-        static RendererAPI *sRendererApi;
+        static RendererAPI *sRendererAPI;
     };
 }

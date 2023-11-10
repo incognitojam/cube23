@@ -3,5 +3,5 @@
 #include "platform/opengl/renderer_api.h"
 
 namespace Vox {
-    RendererAPI *RenderCommand::sRendererApi = new OpenGLRendererAPI();
+    RendererAPI *RenderCommand::sRendererAPI = new OpenGLRendererAPI();
 }

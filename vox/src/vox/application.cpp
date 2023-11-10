@@ -4,6 +4,7 @@
 
 #include "vox/input.h"
 #include "vox/renderer/buffer.h"
+#include "vox/renderer/renderer.h"
 
 namespace Vox {
     Application *Application::sInstance = nullptr;
@@ -16,6 +17,8 @@ namespace Vox {
 
         mWindow = std::unique_ptr<Window>(Window::create());
         mWindow->setEventCallback(VX_BIND_EVENT_FN(Application::onEvent));
+
+        Renderer::init();
     }
 
     void Application::onEvent(Event &e) {
@@ -27,7 +30,7 @@ namespace Vox {
         while (mRunning) {
             mWindow->onUpdate();
 
-            const float time = static_cast<float>(glfwGetTime());
+            const auto time = static_cast<float>(glfwGetTime());
             const Timestep timestep = time - mLastFrameTime;
             mLastFrameTime = time;
             onUpdate(timestep);

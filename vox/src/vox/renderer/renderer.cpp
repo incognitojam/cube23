@@ -5,6 +5,10 @@
 namespace Vox {
     Renderer::SceneData *Renderer::sSceneData = new SceneData;
 
+    void Renderer::init() {
+        RenderCommand::init();
+    }
+
     void Renderer::beginScene(const OrthographicCamera &camera) {
         sSceneData->viewProjectionMatrix = camera.getViewProjectionMatrix();
     }
