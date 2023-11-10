@@ -19,6 +19,7 @@ namespace Vox {
 
     private:
         uint32_t mRendererID;
+        uint32_t mVertexBufferIndex = 0;
         std::vector<std::shared_ptr<VertexBuffer>> mVertexBuffers;
         std::shared_ptr<IndexBuffer> mIndexBuffer;
     };

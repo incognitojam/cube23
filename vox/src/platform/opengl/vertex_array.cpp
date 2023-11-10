@@ -45,17 +45,16 @@ namespace Vox {
         glBindVertexArray(mRendererID);
         vertexBuffer->bind();
 
-        uint32_t index = 0;
         const auto& layout = vertexBuffer->getLayout();
         for (const auto& element : layout) {
-            glEnableVertexAttribArray(index);
-            glVertexAttribPointer(index,
+            glEnableVertexAttribArray(mVertexBufferIndex);
+            glVertexAttribPointer(mVertexBufferIndex,
                                   element.getComponentCount(),
                                   ShaderDataTypeToOpenGLBaseType(element.type),
                                   element.normalized ? GL_TRUE : GL_FALSE,
                                   layout.getStride(),
-                                  (const void*)element.offset);
-            index++;
+                                  (const void*)(intptr_t)element.offset);
+            mVertexBufferIndex++;
         }
 
         mVertexBuffers.push_back(vertexBuffer);
