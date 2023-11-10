@@ -21,6 +21,7 @@ add_subdirectory(vox/vendor/stb)
 
 set(Vox_DIR vox/src)
 set(Vox_SOURCES
+        vox/src/vox/core/timestep.h
         vox/src/vox/events/event.h
         vox/src/vox/events/key_event.h
         vox/src/vox/events/mouse_event.h
