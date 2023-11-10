@@ -1,5 +1,6 @@
 #include "platform/opengl/shader.h"
 
+#include <array>
 #include <fstream>
 #include <iostream>
 #include <vector>
@@ -21,9 +22,16 @@ namespace Vox {
         const std::string source = readFile(filepath);
         auto shaderSources = preprocess(source);
         compile(shaderSources);
+
+        auto lastSlash = filepath.find_last_of("/\\");
+        lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
+        auto lastDot = filepath.rfind('.');
+        auto count = lastDot == std::string::npos ? filepath.size() - lastSlash : lastDot - lastSlash;
+        mName = filepath.substr(lastSlash, count);
     }
 
-    OpenGLShader::OpenGLShader(const std::string &vertexSrc, const std::string &fragmentSrc) {
+    OpenGLShader::OpenGLShader(const std::string &name, const std::string &vertexSrc,
+                               const std::string &fragmentSrc) : mName(name) {
         std::unordered_map<GLenum, std::string> sources;
         sources[GL_VERTEX_SHADER] = vertexSrc;
         sources[GL_FRAGMENT_SHADER] = fragmentSrc;
@@ -63,18 +71,25 @@ namespace Vox {
             GLenum type = getShaderTypeFromString(source.substr(begin, eol - begin));
             size_t nextLinePos = source.find_first_not_of("\r\n", eol);
             pos = source.find(typeToken, nextLinePos);
-            shaderSources[type] = source.substr(nextLinePos, pos - (nextLinePos == std::string::npos ? source.size() - 1 : nextLinePos));
+            shaderSources[type] = source.substr(nextLinePos,
+                                                pos - (nextLinePos == std::string::npos
+                                                           ? source.size() - 1
+                                                           : nextLinePos));
         }
         return shaderSources;
     }
 
     void OpenGLShader::compile(const std::unordered_map<GLenum, std::string> &shaderSources) {
-        std::vector<GLenum> glShaderIDs(shaderSources.size());
+        if (shaderSources.size() > 2) {
+            throw std::runtime_error("Only 2 shaders are supported for now!");
+        }
+        std::array<GLenum, 2> glShaderIDs;
+        int glShaderIDIndex = 0;
 
         mRendererID = glCreateProgram();
 
         for (const auto &[type, source] : shaderSources) {
-            GLuint shader = glCreateShader(type);
+            const GLuint shader = glCreateShader(type);
 
             const GLchar *sourceCStr = source.c_str();
             glShaderSource(shader, 1, &sourceCStr, 0);
@@ -97,7 +112,7 @@ namespace Vox {
             }
 
             glAttachShader(mRendererID, shader);
-            glShaderIDs.push_back(shader);
+            glShaderIDs[glShaderIDIndex++] = shader;
         }
 
         glLinkProgram(mRendererID);

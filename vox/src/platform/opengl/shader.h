@@ -11,11 +11,13 @@ namespace Vox {
     class OpenGLShader final : public Shader {
     public:
         explicit OpenGLShader(const std::string &filepath);
-        OpenGLShader(const std::string &vertexSrc, const std::string &fragmentSrc);
+        OpenGLShader(const std::string &name, const std::string &vertexSrc, const std::string &fragmentSrc);
         ~OpenGLShader() override;
 
         void bind() override;
         void unbind() override;
+
+        const std::string &getName() const override { return mName; }
 
         void uploadUniformInt(const std::string &name, int value) const;
 
@@ -32,6 +34,7 @@ namespace Vox {
         static std::unordered_map<GLenum, std::string> preprocess(const std::string &source);
         void compile(const std::unordered_map<GLenum, std::string> &shaderSources);
 
+        std::string mName;
         uint32_t mRendererID;
     };
 }

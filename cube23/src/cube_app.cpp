@@ -30,13 +30,13 @@ public:
         indexBuffer.reset(Vox::IndexBuffer::create(indices, sizeof(indices) / sizeof(uint32_t)));
         mVertexArray->setIndexBuffer(indexBuffer);
 
-        mShader.reset(Vox::Shader::create("assets/shaders/texture.glsl"));
+        const auto shader = mShaderLibrary.load("assets/shaders/texture.glsl");
 
         mTexture = Vox::Texture2D::create("assets/textures/texture.jpg");
         mYingaTexture = Vox::Texture2D::create("assets/textures/yinga.png");
 
-        mShader->bind();
-        std::dynamic_pointer_cast<Vox::OpenGLShader>(mShader)->uploadUniformInt("u_texture", 0);
+        shader->bind();
+        std::dynamic_pointer_cast<Vox::OpenGLShader>(shader)->uploadUniformInt("u_texture", 0);
     }
 
     ~Cube() {}
@@ -65,6 +65,8 @@ public:
 
         Vox::Renderer::beginScene(mCamera);
 
+        const auto shader = mShaderLibrary.get("texture");
+
         mTexture->bind(0);
 
         const glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
@@ -72,18 +74,18 @@ public:
             for (int x = 0; x < 20; x++) {
                 glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
                 glm::mat4 transform = translate(glm::mat4(1.0f), pos) * scale;
-                Vox::Renderer::submit(mShader, mVertexArray, transform);
+                Vox::Renderer::submit(shader, mVertexArray, transform);
             }
         }
 
         mYingaTexture->bind(0);
-        Vox::Renderer::submit(mShader, mVertexArray);
+        Vox::Renderer::submit(shader, mVertexArray);
 
         Vox::Renderer::endScene();
     }
 
 private:
-    std::shared_ptr<Vox::Shader> mShader;
+    Vox::ShaderLibrary mShaderLibrary;
     std::shared_ptr<Vox::VertexArray> mVertexArray;
 
     std::shared_ptr<Vox::Texture2D> mTexture, mYingaTexture;
