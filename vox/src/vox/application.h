@@ -2,11 +2,9 @@
 
 #include <memory>
 
+#include "vox/core/timestep.h"
 #include "vox/events/application_event.h"
 #include "vox/events/event.h"
-#include "vox/renderer/orthographic_camera.h"
-#include "vox/renderer/shader.h"
-#include "vox/renderer/vertex_array.h"
 #include "vox/window.h"
 
 namespace Vox {
@@ -16,6 +14,8 @@ namespace Vox {
         virtual ~Application() = default;
 
         virtual void run();
+
+        virtual void onUpdate(const Timestep ts) {}
 
         void onEvent(Event &);
 
@@ -28,11 +28,7 @@ namespace Vox {
 
         std::unique_ptr<Window> mWindow;
         bool mRunning = true;
-
-        std::shared_ptr<Shader> mShader;
-        std::shared_ptr<VertexArray> mVertexArray;
-
-        OrthographicCamera mCamera;
+        float mLastFrameTime = 0.0f;
 
         static Application *sInstance;
     };
