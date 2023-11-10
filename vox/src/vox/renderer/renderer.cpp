@@ -20,8 +20,8 @@ namespace Vox {
                           const glm::mat4 &transform) {
         shader->bind();
         std::dynamic_pointer_cast<OpenGLShader>(shader)->uploadUniformMat4(
-            "u_ViewProjection", sSceneData->viewProjectionMatrix);
-        std::dynamic_pointer_cast<OpenGLShader>(shader)->uploadUniformMat4("u_Transform", transform);
+            "u_viewProjection", sSceneData->viewProjectionMatrix);
+        std::dynamic_pointer_cast<OpenGLShader>(shader)->uploadUniformMat4("u_transform", transform);
 
         vertexArray->bind();
         RenderCommand::drawIndexed(vertexArray);
