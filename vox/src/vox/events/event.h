@@ -2,16 +2,26 @@
 
 #include "vox/core.h"
 
-#include <functional>
 #include <string>
 
 namespace Vox {
     enum class EventType {
         None = 0,
-        WindowMoved, WindowResize, WindowFocus, WindowLostFocus, WindowClose,
-        AppTick, AppUpdate, AppRender,
-        KeyPressed, KeyReleased, KeyTyped,
-        MouseMoved, MouseButtonPressed, MouseButtonReleased, MouseScrolled,
+        WindowMoved,
+        WindowResize,
+        WindowFocus,
+        WindowLostFocus,
+        WindowClose,
+        AppTick,
+        AppUpdate,
+        AppRender,
+        KeyPressed,
+        KeyReleased,
+        KeyTyped,
+        MouseMoved,
+        MouseButtonPressed,
+        MouseButtonReleased,
+        MouseScrolled,
     };
 
     enum EventCategory {
@@ -39,7 +49,7 @@ namespace Vox {
 
         [[nodiscard]] virtual std::string toString() const { return getName(); }
 
-        [[nodiscard]] inline bool isInCategory(EventCategory category) const {
+        [[nodiscard]] bool isInCategory(const EventCategory category) const {
             return getCategoryFlags() & category;
         }
 
@@ -48,16 +58,14 @@ namespace Vox {
     };
 
     class EventDispatcher {
-        template<typename T>
-        using EventFn = std::function<bool(T &)>;
-
     public:
-        explicit EventDispatcher(Event &event) : mEvent(event) {}
+        explicit EventDispatcher(Event &event) : mEvent(event) {
+        }
 
-        template<typename T>
-        bool dispatch(EventFn<T> func) {
+        template<typename T, typename F>
+        bool dispatch(const F &func) {
             if (mEvent.getEventType() == T::getStaticType()) {
-                mEvent.mHandled = func(*(T *) &mEvent);
+                mEvent.mHandled = func(static_cast<T &>(mEvent));
                 return true;
             }
             return false;
