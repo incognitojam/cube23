@@ -59,7 +59,8 @@ void main() {
 )";
         mShader.reset(Vox::Shader::create(vertexSrc, fragmentSrc));
 
-        mTexture = Vox::Texture2D::create("textures/texture.jpg");
+        mTexture = Vox::Texture2D::create("assets/textures/texture.jpg");
+        mYingaTexture = Vox::Texture2D::create("assets/textures/yinga.png");
 
         mShader->bind();
         std::dynamic_pointer_cast<Vox::OpenGLShader>(mShader)->uploadUniformInt("u_Texture", 0);
@@ -102,6 +103,9 @@ void main() {
             }
         }
 
+        mYingaTexture->bind(0);
+        Vox::Renderer::submit(mShader, mVertexArray);
+
         Vox::Renderer::endScene();
     }
 
@@ -109,7 +113,7 @@ private:
     std::shared_ptr<Vox::Shader> mShader;
     std::shared_ptr<Vox::VertexArray> mVertexArray;
 
-    std::shared_ptr<Vox::Texture2D> mTexture;
+    std::shared_ptr<Vox::Texture2D> mTexture, mYingaTexture;
 
     Vox::OrthographicCamera mCamera;
     glm::vec3 mCameraPosition;
