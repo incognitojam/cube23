@@ -1,4 +1,4 @@
-#include <vox.h>
+#include <Vox.h>
 
 #include <glm/gtc/matrix_transform.hpp>
 
