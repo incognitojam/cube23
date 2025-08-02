@@ -237,11 +237,20 @@ private:
 
 private:
     void initWindow() {
-        glfwInit();
+        if (!glfwInit()) {
+            throw std::runtime_error("Failed to initialize GLFW!");
+        }
+        if (!glfwVulkanSupported()) {
+            throw std::runtime_error("GLFW reports Vulkan not supported.");
+        }
 
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
         window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
+        if (!window) {
+            throw std::runtime_error("Failed to create GLFW window!");
+        }
+
         glfwSetWindowUserPointer(window, this);
         glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
     }
@@ -1680,11 +1689,20 @@ private:
         uint32_t glfwExtensionCount = 0;
         const char **glfwExtensions;
         glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+        if (!glfwExtensions) {
+            throw std::runtime_error("Failed to get GLFW required extensions!");
+        }
+
+        std::cout << "GLFW required extensions (" << glfwExtensionCount << "):\n";
+        for (uint32_t i = 0; i < glfwExtensionCount; i++) {
+            std::cout << "\t" << glfwExtensions[i] << std::endl;
+        }
 
         std::vector<const char *> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
 
         if (enableValidationLayers) {
             extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+            std::cout << "Adding debug extension: " << VK_EXT_DEBUG_UTILS_EXTENSION_NAME << std::endl;
         }
 
         return extensions;
@@ -1725,3 +1743,16 @@ private:
         return VK_FALSE;
     }
 };
+
+int main() {
+    Application app;
+
+    try {
+        app.run();
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
+}
