@@ -299,21 +299,9 @@ private:
 
     void mainLoop() {
         std::cout << "main loop" << std::endl;
-        auto startTime = std::chrono::high_resolution_clock::now();
-        const auto testDuration = std::chrono::seconds(3); // Run for 3 seconds in test mode
-        
         while (!glfwWindowShouldClose(window)) {
             glfwPollEvents();
             drawFrame();
-            
-            // Auto-close after testDuration if CUBE23_TEST_MODE environment variable is set
-            if (std::getenv("CUBE23_TEST_MODE")) {
-                auto currentTime = std::chrono::high_resolution_clock::now();
-                if (currentTime - startTime >= testDuration) {
-                    std::cout << "Test mode: auto-closing after " << testDuration.count() << " seconds" << std::endl;
-                    glfwSetWindowShouldClose(window, GLFW_TRUE);
-                }
-            }
         }
 
         vkDeviceWaitIdle(device);
