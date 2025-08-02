@@ -20,20 +20,7 @@ jobs:
         submodules: recursive
         fetch-depth: 1
 
-    - name: Cache Vulkan SDK
-      uses: actions/cache@v4
-      id: cache-vulkan
-      with:
-        path: |
-          /usr/bin/glslc
-          /usr/bin/glslangValidator
-          /usr/bin/spirv-opt
-          /usr/lib/x86_64-linux-gnu/libvulkan.so*
-          /usr/include/vulkan
-        key: vulkan-sdk-${{ runner.os }}-noble
-
     - name: Setup Vulkan SDK
-      if: steps.cache-vulkan.outputs.cache-hit != 'true'
       run: |
         # Add LunarG Vulkan SDK repository
         wget -qO- https://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo tee /etc/apt/trusted.gpg.d/lunarg.asc
