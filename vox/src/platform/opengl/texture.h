@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "vox/renderer/texture.h"
 
 namespace Vox {
