@@ -257,7 +257,7 @@ private:
 
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
-        window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
+        window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan2", nullptr, nullptr);
         if (!window) {
             throw std::runtime_error("Failed to create GLFW window!");
         }

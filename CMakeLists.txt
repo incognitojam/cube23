@@ -47,7 +47,7 @@ set(Vox_SOURCES
         vox/src/vox/mouse_button_codes.h
         vox/src/vox/window.cpp
         vox/src/vox/window.h
-        vox/src/vox.h
+        vox/src/Vox.h
 
         vox/src/platform/opengl/buffer.cpp
         vox/src/platform/opengl/buffer.h
