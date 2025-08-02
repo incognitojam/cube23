@@ -20,79 +20,19 @@ jobs:
         submodules: recursive
         fetch-depth: 1
 
-    - name: Setup Vulkan SDK
-      run: |
-        # Add LunarG Vulkan SDK repository
-        wget -qO- https://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo tee /etc/apt/trusted.gpg.d/lunarg.asc
-        sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-noble.list https://packages.lunarg.com/vulkan/lunarg-vulkan-noble.list
-        sudo apt-get update
-        sudo apt-get install -y vulkan-sdk
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
 
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y \
-          build-essential \
-          cmake \
-          ninja-build \
-          libglfw3-dev \
-          libxinerama-dev \
-          libxcursor-dev \
-          libxrandr-dev \
-          libxi-dev
+    - name: Build CI Docker image
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: ./Dockerfile.ci
+        push: false
+        load: true
+        tags: cube23-ci:latest
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
 
-    - name: Verify Vulkan installation
-      run: |
-        echo "Vulkan SDK components:"
-        which glslc || echo "glslc not found"
-        which glslangValidator || echo "glslangValidator not found"
-        which spirv-opt || echo "spirv-opt not found"
-        echo "VULKAN_SDK: $VULKAN_SDK"
-
-    - name: Configure CMake
-      run: |
-        cmake -B build \
-          -G Ninja \
-          -DCMAKE_BUILD_TYPE=Release \
-          -DCMAKE_C_COMPILER=gcc \
-          -DCMAKE_CXX_COMPILER=g++
-
-    - name: Build vox library
-      run: cmake --build build --target vox -j$(nproc)
-
-    - name: Build cube23
-      run: cmake --build build --target cube23 -j$(nproc)
-
-    - name: Build cube23_vk
-      run: cmake --build build --target cube23_vk -j$(nproc)
-
-    - name: Build all targets
-      run: cmake --build build -j$(nproc)
-
-    - name: List build artifacts
-      run: |
-        echo "Build directory contents:"
-        ls -la build/
-        echo "Checking for executables:"
-        file build/cube23 || echo "cube23 not found"
-        file build/cube23_vk || echo "cube23_vk not found"
-        file build/libvox.a || echo "libvox.a not found"
-
-    - name: Verify shader compilation
-      run: |
-        echo "Checking for compiled shaders:"
-        if [ ! -d "build/shaders" ]; then
-          echo "ERROR: Shaders directory not found!"
-          exit 1
-        fi
-        echo "Shaders directory exists, checking for required shader files:"
-        ls -la build/shaders/
-        if [ ! -f "build/shaders/shader.vert.spv" ]; then
-          echo "ERROR: Vertex shader not compiled!"
-          exit 1
-        fi
-        if [ ! -f "build/shaders/shader.frag.spv" ]; then
-          echo "ERROR: Fragment shader not compiled!"
-          exit 1
-        fi
-        echo "✅ All required shaders compiled successfully"
+    - name: Run build and tests in container
+      run: ./test.sh

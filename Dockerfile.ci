@@ -1,0 +1,51 @@
+# Dockerfile for CI environment with pre-installed dependencies
+FROM ubuntu:24.04
+
+# Avoid interactive prompts during package installation
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install base dependencies
+RUN apt-get update && apt-get install -y \
+    wget \
+    gnupg \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Add LunarG Vulkan SDK repository
+RUN wget -qO- https://packages.lunarg.com/lunarg-signing-key-pub.asc | tee /etc/apt/trusted.gpg.d/lunarg.asc > /dev/null && \
+    wget -qO /etc/apt/sources.list.d/lunarg-vulkan-noble.list https://packages.lunarg.com/vulkan/lunarg-vulkan-noble.list && \
+    apt-get update
+
+# Install all dependencies in one layer for better caching
+RUN apt-get install -y \
+    build-essential \
+    cmake \
+    ninja-build \
+    libglfw3-dev \
+    libxinerama-dev \
+    libxcursor-dev \
+    libxrandr-dev \
+    libxi-dev \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Vulkan SDK components
+RUN apt-get update && apt-get install -y \
+    vulkan-tools \
+    vulkan-utility-libraries-dev \
+    spirv-tools \
+    glslang-tools \
+    libvulkan-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create glslc wrapper script since cmake-spirv expects glslc syntax but Ubuntu provides glslangValidator
+RUN echo '#!/bin/bash\n# Wrapper to convert glslc calls to glslangValidator calls\n# glslc: <input> -o <output>\n# glslangValidator: -V <input> -o <output>\nexec /usr/bin/glslangValidator -V "$@"' > /usr/bin/glslc && chmod +x /usr/bin/glslc
+
+# Verify Vulkan tools are available
+RUN which spirv-opt && which glslang && which glslc && which glslangValidator
+
+# Set working directory
+WORKDIR /workspace
+
+# Default command
+CMD ["/bin/bash"]
