@@ -4,10 +4,6 @@ project(cube23)
 set(CMAKE_CXX_STANDARD 20)
 
 
-find_package(Vulkan REQUIRED COMPONENTS glslc)
-find_program(glslc_executable NAMES glslc HINTS Vulkan::glslc)
-include_directories(${Vulkan_INCLUDE_DIRS})
-
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
@@ -70,7 +66,8 @@ set(Vox_SOURCES
 add_library(vox STATIC ${Vox_SOURCES})
 target_include_directories(vox PUBLIC ${Vox_DIR})
 target_compile_definitions(vox PUBLIC GLFW_INCLUDE_NONE)
-target_link_libraries(vox PUBLIC ${Vulkan_LIBRARIES} glfw glad glm stb_image)
+target_link_libraries(vox PUBLIC glfw glad glm stb_image)
+
 
 set(Cube_DIR cube23/src)
 set(Cube_SOURCES
@@ -79,3 +76,14 @@ set(Cube_SOURCES
 add_executable(cube23 ${Cube_SOURCES})
 target_include_directories(cube23 PRIVATE ${Vox_DIR})
 target_link_libraries(cube23 PRIVATE vox)
+
+
+find_package(Vulkan)
+include_directories(${Vulkan_INCLUDE_DIRS})
+
+set(CubeVK_SOURCES
+        cube23/src/main.cpp
+)
+add_executable(cube23_vk ${CubeVK_SOURCES})
+target_include_directories(cube23_vk PRIVATE ${Vox_DIR})
+target_link_libraries(cube23_vk PRIVATE vox ${Vulkan_LIBRARIES})
