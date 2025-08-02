@@ -172,7 +172,10 @@ case "$EXECUTION_MODE" in
         ;;
     "ci"|"docker_headless"|*)
         echo "🤖 Running cube23_vk headless with xvfb"
-        run "cd build && timeout 10s bash -c 'CUBE23_TEST_MODE=1 xvfb-run -a --server-args=\"-screen 0 800x600x24\" ./cube23_vk'"
+        run "cd build && timeout 10s bash -c 'CUBE23_TEST_MODE=1 xvfb-run -a --server-args=\"-screen 0 800x600x24\" ./cube23_vk &
+        DISPLAY=:99 sleep 2
+        DISPLAY=:99 xwd -root -out /workspace/screenshot.xwd
+        wait'"
         ;;
 esac
 
