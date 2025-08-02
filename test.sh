@@ -31,7 +31,7 @@ fi
 
 # Helper function to run commands in container
 run() {
-    docker run --rm \
+    docker run --rm --platform linux/amd64 \
         -v "${WORKSPACE_PATH}:/workspace" \
         "${IMAGE_NAME}:${IMAGE_TAG}" \
         bash -c "$*"
@@ -40,7 +40,8 @@ run() {
 # Build Docker image if running locally
 if [ "$BUILD_IMAGE" = true ]; then
     echo "🔨 Building Docker image: ${IMAGE_NAME}:${IMAGE_TAG}"
-    docker build -f "$DOCKERFILE" -t "${IMAGE_NAME}:${IMAGE_TAG}" .
+    # Build for amd64 to match GitHub Actions environment
+    docker build --platform linux/amd64 -f "$DOCKERFILE" -t "${IMAGE_NAME}:${IMAGE_TAG}" .
     echo "✅ Docker image built successfully"
 fi
 

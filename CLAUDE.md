@@ -154,6 +154,7 @@ Use the `test.sh` script to replicate the CI environment locally:
 - Ubuntu 24.04 with pre-installed build tools, Vulkan SDK, and X11 libraries
 - Custom `glslc` wrapper script for shader compilation compatibility
 - All dependencies cached in Docker layers for fast rebuilds
+- **Architecture**: Uses `linux/amd64` platform to match GitHub Actions environment (even when running locally on ARM64 machines)
 
 ### Manual Build (Alternative)
 

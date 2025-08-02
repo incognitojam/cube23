@@ -21,6 +21,7 @@ RUN apt-get install -y \
     build-essential \
     cmake \
     ninja-build \
+    pkg-config \
     libglfw3-dev \
     libxinerama-dev \
     libxcursor-dev \
@@ -29,14 +30,23 @@ RUN apt-get install -y \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Vulkan SDK components
+# Install Vulkan SDK components - try from LunarG repository first
 RUN apt-get update && apt-get install -y \
+    vulkan-sdk \
+    && rm -rf /var/lib/apt/lists/* || \
+    # Fallback to Ubuntu packages if LunarG packages fail
+    (apt-get update && apt-get install -y \
     vulkan-tools \
     vulkan-utility-libraries-dev \
     spirv-tools \
     glslang-tools \
     libvulkan-dev \
-    && rm -rf /var/lib/apt/lists/*
+    libvulkan1 \
+    && rm -rf /var/lib/apt/lists/*)
+
+# Verify Vulkan installation
+RUN pkg-config --exists vulkan && echo "✅ Vulkan pkg-config found" || echo "❌ Vulkan pkg-config missing"
+RUN ls -la /usr/include/vulkan/ 2>/dev/null && echo "✅ Vulkan headers found" || echo "❌ Vulkan headers missing"
 
 # Create glslc wrapper script since cmake-spirv expects glslc syntax but Ubuntu provides glslangValidator
 RUN echo '#!/bin/bash\n# Wrapper to convert glslc calls to glslangValidator calls\n# glslc: <input> -o <output>\n# glslangValidator: -V <input> -o <output>\nexec /usr/bin/glslangValidator -V "$@"' > /usr/bin/glslc && chmod +x /usr/bin/glslc
