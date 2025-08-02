@@ -51,7 +51,8 @@ jobs:
           libglfw3-dev \
           libxinerama-dev \
           libxcursor-dev \
-          libxrandr-dev
+          libxrandr-dev \
+          libxi-dev
 
     - name: Verify Vulkan installation
       run: |
