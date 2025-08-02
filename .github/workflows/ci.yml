@@ -48,7 +48,10 @@ jobs:
           build-essential \
           cmake \
           ninja-build \
-          libglfw3-dev
+          libglfw3-dev \
+          libxinerama-dev \
+          libxcursor-dev \
+          libxrandr-dev
 
     - name: Verify Vulkan installation
       run: |
