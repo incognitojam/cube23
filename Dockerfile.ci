@@ -25,6 +25,8 @@ RUN apt-get update && apt-get install -y \
     git \
     curl \
     xvfb \
+    x11-apps \
+    imagemagick \
     && rm -rf /var/lib/apt/lists/*
 
 # Download and install Vulkan SDK from deterministic tarball

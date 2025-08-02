@@ -42,5 +42,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: xvfb-screenshot
-        path: screenshot.xwd
+        path: screenshot.png
         if-no-files-found: warn
