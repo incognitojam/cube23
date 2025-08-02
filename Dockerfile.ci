@@ -1,0 +1,54 @@
+# Dockerfile for CI environment with pre-installed dependencies
+FROM ubuntu:24.04
+
+# Avoid interactive prompts during package installation
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install base dependencies
+RUN apt-get update && apt-get install -y \
+    wget \
+    gnupg \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install all dependencies in one layer for better caching
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    cmake \
+    ninja-build \
+    pkg-config \
+    libglfw3-dev \
+    libxinerama-dev \
+    libxcursor-dev \
+    libxrandr-dev \
+    libxi-dev \
+    git \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Download and install Vulkan SDK from deterministic tarball
+RUN cd /tmp && \
+    curl -L -o vulkansdk.tar.xz https://sdk.lunarg.com/sdk/download/1.4.321.1/linux/vulkansdk-linux-x86_64-1.4.321.1.tar.xz && \
+    echo "f22a3625bd4d7a32e7a0d926ace16d5278c149e938dac63cecc00537626cbf73  vulkansdk.tar.xz" | sha256sum -c && \
+    mkdir -p /opt/vulkan && \
+    tar xf vulkansdk.tar.xz -C /opt/vulkan --strip-components=1 && \
+    rm vulkansdk.tar.xz
+
+# Set up Vulkan SDK environment variables
+ENV VULKAN_SDK=/opt/vulkan/x86_64
+ENV PATH=$VULKAN_SDK/bin:$PATH
+ENV LD_LIBRARY_PATH=$VULKAN_SDK/lib
+ENV VK_ADD_LAYER_PATH=$VULKAN_SDK/share/vulkan/explicit_layer.d
+
+# Verify Vulkan installation
+RUN ls -la $VULKAN_SDK/include/vulkan/ && echo "✅ Vulkan headers found" || echo "❌ Vulkan headers missing"
+RUN $VULKAN_SDK/bin/vulkaninfo --summary && echo "✅ Vulkan SDK tools working" || echo "❌ Vulkan SDK tools missing"
+
+# Verify Vulkan tools are available from SDK
+RUN which $VULKAN_SDK/bin/glslc && which $VULKAN_SDK/bin/spirv-opt && which $VULKAN_SDK/bin/vulkaninfo
+
+# Set working directory
+WORKDIR /workspace
+
+# Default command
+CMD ["/bin/bash"]

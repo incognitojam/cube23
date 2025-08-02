@@ -127,6 +127,50 @@ Assets should be placed in `cube23/assets/` and will be automatically copied to 
 - Shaders: `.vert`, `.frag` GLSL source files
 - Build system handles copying and shader compilation transparently
 
+## CI/CD and Testing
+
+The project includes a Docker-based CI environment with GitHub Actions:
+
+**CI Workflow:**
+- Uses `Dockerfile.ci` to create a pre-built environment with all dependencies
+- BuildKit caching (`type=gha`) speeds up subsequent builds significantly
+- Builds all three targets: `vox` library, `cube23`, and `cube23_vk`
+- Verifies shader compilation and asset copying
+
+### Local Testing with Docker
+
+Use the `test.sh` script to replicate the CI environment locally:
+
+```bash
+# Run locally (builds image and tests)
+./test.sh
+
+# Script automatically detects environment:
+# - Local: Builds Docker image then runs tests
+# - GitHub Actions: Uses pre-built image, runs tests only
+```
+
+**Docker Image Features:**
+- Ubuntu 24.04 with pre-installed build tools, Vulkan SDK, and X11 libraries
+- Custom `glslc` wrapper script for shader compilation compatibility
+- All dependencies cached in Docker layers for fast rebuilds
+- **Architecture**: Uses `linux/amd64` platform to match GitHub Actions environment (even when running locally on ARM64 machines)
+
+### Manual Build (Alternative)
+
+For development without Docker:
+
+```bash
+# Install dependencies (Ubuntu/Debian)
+sudo apt-get install build-essential cmake ninja-build vulkan-tools \
+    glslang-tools spirv-tools libglfw3-dev libxinerama-dev \
+    libxcursor-dev libxrandr-dev libxi-dev
+
+# Build
+cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+cmake --build build -j$(nproc)
+```
+
 ### Documentation and Notes
 
 The `notes/` directory contains project documentation and analysis:
