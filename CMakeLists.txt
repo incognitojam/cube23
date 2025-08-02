@@ -87,3 +87,26 @@ set(CubeVK_SOURCES
 add_executable(cube23_vk ${CubeVK_SOURCES})
 target_include_directories(cube23_vk PRIVATE ${Vox_DIR})
 target_link_libraries(cube23_vk PRIVATE vox ${Vulkan_LIBRARIES})
+
+include(FetchContent)
+FetchContent_Declare(cmake-spirv
+        GIT_REPOSITORY https://github.com/liliolett/cmake-spirv.git
+        GIT_TAG origin/v1
+)
+FetchContent_MakeAvailable(cmake-spirv)
+
+list(APPEND CMAKE_MODULE_PATH ${cmake-spirv_SOURCE_DIR}/include)
+include(AddSpirvModules)
+
+add_spirv_modules(shaders
+        SOURCE_DIR cube23/assets/shaders
+        BINARY_DIR shaders
+        SOURCES shader.vert shader.frag)
+
+add_dependencies(cube23_vk shaders)
+
+# Copy textures directory to build directory (shaders are already compiled to shaders/ by add_spirv_modules)
+add_custom_command(TARGET cube23_vk POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/cube23/assets/textures
+    ${CMAKE_CURRENT_BINARY_DIR}/textures)
