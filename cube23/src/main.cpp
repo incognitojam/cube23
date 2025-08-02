@@ -236,13 +236,24 @@ private:
     bool framebufferResized = false;
 
 private:
+    static void errorCallback(int error, const char* description) {
+        std::cerr << "GLFW Error " << error << ": " << description << std::endl;
+    }
+
     void initWindow() {
+        glfwSetErrorCallback(errorCallback);
+        
         if (!glfwInit()) {
+            std::cout << "GLFW initialization failed!" << std::endl;
             throw std::runtime_error("Failed to initialize GLFW!");
         }
+        std::cout << "GLFW initialized successfully" << std::endl;
+        
         if (!glfwVulkanSupported()) {
+            std::cout << "GLFW reports Vulkan not supported" << std::endl;
             throw std::runtime_error("GLFW reports Vulkan not supported.");
         }
+        std::cout << "GLFW reports Vulkan is supported" << std::endl;
 
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
@@ -392,16 +403,20 @@ private:
             appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
             appInfo.pEngineName = "No Engine";
             appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-            appInfo.apiVersion = VK_API_VERSION_1_0;
+            appInfo.apiVersion = VK_API_VERSION_1_1;
         }
+
+        std::cout << "Getting required extensions..." << std::endl;
+        auto extensions = getRequiredExtensions();
+        std::cout << "Got " << extensions.size() << " required extensions" << std::endl;
 
         VkInstanceCreateInfo createInfo{};
         VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo{};
         {
             createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
             createInfo.pApplicationInfo = &appInfo;
+            createInfo.flags = VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR;  // Required for MoltenVK
 
-            auto extensions = getRequiredExtensions();
             createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
             createInfo.ppEnabledExtensionNames = extensions.data();
 
@@ -420,11 +435,11 @@ private:
         uint32_t extensionCount = 0;
         vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
 
-        std::vector<VkExtensionProperties> extensions(extensionCount);
-        vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensions.data());
+        std::vector<VkExtensionProperties> availableExtensions(extensionCount);
+        vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, availableExtensions.data());
 
         std::cout << "available extensions:\n";
-        for (const auto &extension: extensions) {
+        for (const auto &extension: availableExtensions) {
             std::cout << "\t" << extension.extensionName << std::endl;
         }
 
@@ -509,6 +524,33 @@ private:
         VkPhysicalDeviceFeatures deviceFeatures{};
         deviceFeatures.samplerAnisotropy = VK_TRUE;
 
+        // Check if we need to add portability subset extension for MoltenVK
+        std::vector<const char*> requiredDeviceExtensions(deviceExtensions.begin(), deviceExtensions.end());
+        
+        uint32_t extensionCount;
+        vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, nullptr);
+        std::vector<VkExtensionProperties> availableExtensions(extensionCount);
+        vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, availableExtensions.data());
+        
+        std::cout << "Available device extensions:" << std::endl;
+        bool hasPortabilitySubset = false;
+        bool hasGetPhysicalDeviceProps2 = false;
+        
+        for (const auto &extension: availableExtensions) {
+            std::cout << "\t" << extension.extensionName << std::endl;
+            if (strcmp(extension.extensionName, "VK_KHR_portability_subset") == 0) {
+                hasPortabilitySubset = true;
+            }
+            if (strcmp(extension.extensionName, "VK_KHR_get_physical_device_properties2") == 0) {
+                hasGetPhysicalDeviceProps2 = true;
+            }
+        }
+        
+        if (hasPortabilitySubset) {
+            requiredDeviceExtensions.push_back("VK_KHR_portability_subset");
+            std::cout << "Adding portability subset device extension for MoltenVK" << std::endl;
+        }
+
         VkDeviceCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
         createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
@@ -516,8 +558,8 @@ private:
 
         createInfo.pEnabledFeatures = &deviceFeatures;
 
-        createInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
-        createInfo.ppEnabledExtensionNames = deviceExtensions.data();
+        createInfo.enabledExtensionCount = static_cast<uint32_t>(requiredDeviceExtensions.size());
+        createInfo.ppEnabledExtensionNames = requiredDeviceExtensions.data();
 
         if (enableValidationLayers) {
             createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
@@ -1646,8 +1688,13 @@ private:
 
         std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
 
+        // Check for portability subset (required for MoltenVK on macOS)
+        bool hasPortabilitySubset = false;
         for (const auto &extension: availableExtensions) {
             requiredExtensions.erase(extension.extensionName);
+            if (strcmp(extension.extensionName, "VK_KHR_portability_subset") == 0) {
+                hasPortabilitySubset = true;
+            }
         }
 
         return requiredExtensions.empty();
@@ -1688,8 +1735,20 @@ private:
     std::vector<const char *> getRequiredExtensions() {
         uint32_t glfwExtensionCount = 0;
         const char **glfwExtensions;
+        
+        std::cout << "Calling glfwGetRequiredInstanceExtensions..." << std::endl;
         glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-        if (!glfwExtensions) {
+        
+        const char* errorDescription;
+        int errorCode = glfwGetError(&errorDescription);
+        if (errorCode != GLFW_NO_ERROR) {
+            std::cout << "GLFW error during glfwGetRequiredInstanceExtensions: " << errorCode << " - " << (errorDescription ? errorDescription : "Unknown error") << std::endl;
+        }
+        
+        std::cout << "Extension count: " << glfwExtensionCount << std::endl;
+        std::cout << "Extensions pointer: " << (void*)glfwExtensions << std::endl;
+        
+        if (!glfwExtensions || glfwExtensionCount == 0) {
             throw std::runtime_error("Failed to get GLFW required extensions!");
         }
 
@@ -1704,6 +1763,10 @@ private:
             extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
             std::cout << "Adding debug extension: " << VK_EXT_DEBUG_UTILS_EXTENSION_NAME << std::endl;
         }
+
+        // Add portability enumeration extension for MoltenVK on macOS
+        extensions.push_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
+        std::cout << "Adding portability enumeration extension: " << VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME << std::endl;
 
         return extensions;
     }
