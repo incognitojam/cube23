@@ -82,4 +82,18 @@ jobs:
     - name: Verify shader compilation
       run: |
         echo "Checking for compiled shaders:"
-        ls -la build/shaders/ || echo "No shaders directory found"
+        if [ ! -d "build/shaders" ]; then
+          echo "ERROR: Shaders directory not found!"
+          exit 1
+        fi
+        echo "Shaders directory exists, checking for required shader files:"
+        ls -la build/shaders/
+        if [ ! -f "build/shaders/shader.vert.spv" ]; then
+          echo "ERROR: Vertex shader not compiled!"
+          exit 1
+        fi
+        if [ ! -f "build/shaders/shader.frag.spv" ]; then
+          echo "ERROR: Fragment shader not compiled!"
+          exit 1
+        fi
+        echo "✅ All required shaders compiled successfully"
