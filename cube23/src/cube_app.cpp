@@ -6,7 +6,7 @@
 
 class Cube final : public Vox::Application {
 public:
-    Cube() : mCamera(-1.6f, 1.6f, -0.9f, 0.9f), mCameraPosition(0.0f) {
+    Cube() : mCamera(-1.6f, 1.6f, -0.9f, 0.9f), mCameraPosition(0.0f), mTime(0.0f) {
         mVertexArray.reset(Vox::VertexArray::create());
 
         float vertices[5 * 4] = {
@@ -42,6 +42,7 @@ public:
     ~Cube() {}
 
     void onUpdate(const Vox::Timestep ts) override {
+        mTime += ts;
         if (Vox::Input::isKeyPressed(VX_KEY_LEFT))
             mCameraPosition.x -= mCameraMoveSpeed * ts;
         else if (Vox::Input::isKeyPressed(VX_KEY_RIGHT))
@@ -69,13 +70,24 @@ public:
 
         mTexture->bind(0);
 
-        const glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
-        for (int y = 0; y < 20; y++) {
-            for (int x = 0; x < 20; x++) {
-                glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
-                glm::mat4 transform = translate(glm::mat4(1.0f), pos) * scale;
-                Vox::Renderer::submit(shader, mVertexArray, transform);
-            }
+        for (int i = 0; i < 150; i++) {
+            float angle = i * 0.3f + mTime * 2.0f;
+            float radius = 0.3f + 0.2f * sin(mTime * 1.5f + i * 0.1f);
+            float x = cos(angle) * radius;
+            float y = sin(angle) * radius;
+
+            float scaleValue = 0.05f + 0.03f * sin(mTime * 3.0f + i * 0.2f);
+            float rotation = mTime * 90.0f + i * 10.0f;
+
+            glm::vec3 pos(x, y, 0.0f);
+            glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) *
+                                glm::rotate(glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f)) *
+                                glm::scale(glm::mat4(1.0f), glm::vec3(scaleValue));
+
+            if (i % 3 == 0) mTexture->bind(0);
+            else mYingaTexture->bind(0);
+
+            Vox::Renderer::submit(shader, mVertexArray, transform);
         }
 
         mYingaTexture->bind(0);
@@ -95,6 +107,7 @@ private:
     float mCameraMoveSpeed = 5.0f;
     float mCameraRotation = 0.0f;
     float mCameraRotationSpeed = 180.0f;
+    float mTime;
 };
 
 Vox::Application *Vox::create_application() {
