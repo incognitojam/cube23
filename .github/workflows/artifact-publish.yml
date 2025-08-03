@@ -121,17 +121,15 @@ jobs:
           const prNumber = ${{ needs.pr.outputs.number }};
           const screenshotUrl = `https://raw.githubusercontent.com/incognitojam/ci-artifacts/cube23/pr-${prNumber}/screenshot.png`;
 
-          const body = `## 📸 Screenshot from CI
+          const body = `## 📸 Screenshot
 
-          ![Screenshot](${screenshotUrl})
-
-          _Screenshot captured from headless Vulkan rendering in CI_`;
+          ![Screenshot](${screenshotUrl});
 
           await github.rest.issues.createComment({
             owner: context.repo.owner,
             repo: context.repo.repo,
             issue_number: prNumber,
-            body: body
+            body,
           });
 
   update_pr_check:
