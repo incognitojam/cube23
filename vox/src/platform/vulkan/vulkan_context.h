@@ -109,6 +109,9 @@ namespace Vox {
 
         const std::vector<const char*> mDeviceExtensions = {
             VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+#ifdef __APPLE__
+            "VK_KHR_portability_subset",
+#endif
         };
 
 #ifdef NDEBUG
