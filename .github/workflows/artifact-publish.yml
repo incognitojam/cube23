@@ -113,7 +113,7 @@ jobs:
         cp ../screenshot.png .
         git add .
         git commit -m "screenshot for PR #${{ needs.pr.outputs.number }}" || echo "No changes"
-        git push origin cube23/pr-${{ needs.pr.outputs.number }}
+        git push origin cube23/pr-${{ needs.pr.outputs.number }} --force
 
     - name: Comment on PR with screenshot
       uses: actions/github-script@v7
