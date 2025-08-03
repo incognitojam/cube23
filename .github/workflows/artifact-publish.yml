@@ -124,7 +124,7 @@ jobs:
 
           const body = `## 📸 Screenshot
 
-          ![Screenshot](${screenshotUrl});
+          ![Screenshot](${screenshotUrl})`;
 
           await github.rest.issues.createComment({
             owner: context.repo.owner,
