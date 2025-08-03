@@ -22,7 +22,7 @@ namespace Vox {
     }
 
     OpenGLVertexArray::OpenGLVertexArray() {
-        glCreateVertexArrays(1, &mRendererID);
+        glGenVertexArrays(1, &mRendererID);
     }
 
     OpenGLVertexArray::~OpenGLVertexArray() {
