@@ -1,4 +1,4 @@
-name: Publish Screenshots
+name: PR Comment
 
 on:
   workflow_run:
@@ -58,7 +58,7 @@ jobs:
             })
             return response.data.id
 
-  publish-screenshot:
+  pr-comment:
     runs-on: ubuntu-latest
     needs: pr
     if: ${{ needs.pr.outputs.number }}
@@ -115,7 +115,7 @@ jobs:
         git commit -m "screenshot for PR #${{ needs.pr.outputs.number }}" || echo "No changes"
         git push origin cube23/pr-${{ needs.pr.outputs.number }} --force
 
-    - name: Comment on PR with screenshot
+    - name: Comment on PR
       uses: actions/github-script@v7
       with:
         script: |
@@ -135,7 +135,7 @@ jobs:
 
   update_pr_check:
     name: Update PR check
-    needs: [pr, publish-screenshot]
+    needs: [pr, pr-comment]
     if: always() && github.event.workflow_run.event == 'pull_request'
     runs-on: ubuntu-latest
     steps:
@@ -148,10 +148,10 @@ jobs:
             name: 'Screenshot Preview',
             head_sha: '${{ github.event.workflow_run.head_sha }}',
             status: 'completed',
-            conclusion: '${{ needs.publish-screenshot.result }}',
+            conclusion: '${{ needs.pr-comment.result }}',
             output: {
               title: 'Screenshot preparation',
-              summary: 'Result: ${{ needs.publish-screenshot.result }}',
+              summary: 'Result: ${{ needs.pr-comment.result }}',
             },
             owner: context.repo.owner,
             repo: context.repo.repo,
