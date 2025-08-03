@@ -117,25 +117,18 @@ jobs:
         git push origin cube23/pr-${{ needs.pr.outputs.number }} --force
 
     - name: Comment on PR
-      uses: actions/github-script@v7
+      uses: thollander/actions-comment-pull-request@24bffb9b452ba05a4f3f77933840a6a841d1b32b
       with:
-        script: |
-          const prNumber = ${{ needs.pr.outputs.number }};
-          const vulkanScreenshotUrl = `https://raw.githubusercontent.com/incognitojam/ci-artifacts/cube23/pr-${prNumber}/screenshot_vk.png`;
-          const openglScreenshotUrl = `https://raw.githubusercontent.com/incognitojam/ci-artifacts/cube23/pr-${prNumber}/screenshot_opengl.png`;
-
-          const body = `## 📸 Screenshots
+        message: |
+          <!-- _(screenshots run_id **${{ github.run_id }}**)_ -->
+          ## 📸 Screenshots
 
           | Vulkan (cube23_vk) | OpenGL (cube23) |
           |:---:|:---:|
-          | ![Vulkan Screenshot](${vulkanScreenshotUrl}) | ![OpenGL Screenshot](${openglScreenshotUrl}) |`;
-
-          await github.rest.issues.createComment({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            issue_number: prNumber,
-            body,
-          });
+          | ![Vulkan Screenshot](https://raw.githubusercontent.com/incognitojam/ci-artifacts/cube23/pr-${{ needs.pr.outputs.number }}/screenshot_vk.png) | ![OpenGL Screenshot](https://raw.githubusercontent.com/incognitojam/ci-artifacts/cube23/pr-${{ needs.pr.outputs.number }}/screenshot_opengl.png) |
+        comment-tag: screenshots
+        pr-number: ${{ needs.pr.outputs.number }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
 
   update_pr_check:
     name: Update PR check
