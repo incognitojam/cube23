@@ -43,4 +43,5 @@ jobs:
       with:
         name: xvfb-screenshot
         path: screenshot.png
-        if-no-files-found: warn
+        if-no-files-found: error
+        retention-days: 1
