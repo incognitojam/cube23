@@ -10,6 +10,7 @@ namespace Vox {
         enum class API {
             None = 0,
             OpenGL = 1,
+            Vulkan = 2,
         };
 
         virtual void init() = 0;

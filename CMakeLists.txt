@@ -61,6 +61,17 @@ set(Vox_SOURCES
         vox/src/platform/opengl/texture.h
         vox/src/platform/opengl/vertex_array.cpp
         vox/src/platform/opengl/vertex_array.h
+
+        vox/src/platform/vulkan/vulkan_buffer.cpp
+        vox/src/platform/vulkan/vulkan_buffer.h
+        vox/src/platform/vulkan/vulkan_renderer_api.cpp
+        vox/src/platform/vulkan/vulkan_renderer_api.h
+        vox/src/platform/vulkan/vulkan_shader.cpp
+        vox/src/platform/vulkan/vulkan_shader.h
+        vox/src/platform/vulkan/vulkan_texture.cpp
+        vox/src/platform/vulkan/vulkan_texture.h
+        vox/src/platform/vulkan/vulkan_vertex_array.cpp
+        vox/src/platform/vulkan/vulkan_vertex_array.h
 )
 
 add_library(vox STATIC ${Vox_SOURCES})

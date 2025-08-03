@@ -3,6 +3,7 @@
 #include "vox/renderer/renderer.h"
 
 #include "platform/opengl/shader.h"
+#include "platform/vulkan/vulkan_shader.h"
 
 namespace Vox {
     std::shared_ptr<Shader> Shader::create(const std::string &filepath) {
@@ -11,6 +12,8 @@ namespace Vox {
                 throw std::runtime_error("RendererAPI::None is currently not supported!");
             case RendererAPI::API::OpenGL:
                 return std::make_shared<OpenGLShader>(filepath);
+            case RendererAPI::API::Vulkan:
+                return std::make_shared<VulkanShader>(filepath);
             default:
                 throw std::runtime_error("Unknown RendererAPI!");
         }
@@ -22,6 +25,8 @@ namespace Vox {
                 throw std::runtime_error("RendererAPI::None is currently not supported!");
             case RendererAPI::API::OpenGL:
                 return std::make_shared<OpenGLShader>(name, vertexSrc, fragmentSrc);
+            case RendererAPI::API::Vulkan:
+                return std::make_shared<VulkanShader>(name, vertexSrc, fragmentSrc);
             default:
                 throw std::runtime_error("Unknown RendererAPI!");
         }
