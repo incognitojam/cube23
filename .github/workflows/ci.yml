@@ -37,11 +37,13 @@ jobs:
     - name: Run build and tests in container
       run: ./test.sh
 
-    - name: Upload screenshot artifact
+    - name: Upload screenshots artifact
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: xvfb-screenshot
-        path: screenshot.png
+        name: screenshots
+        path: |
+          screenshot_vk.png
+          screenshot_opengl.png
         if-no-files-found: error
         retention-days: 1

@@ -46,12 +46,12 @@ jobs:
         with:
           script: |
             const response = await github.rest.checks.create({
-              name: 'Screenshot Preview',
+              name: 'Screenshots Preview',
               head_sha: '${{ github.event.workflow_run.head_sha }}',
               status: 'in_progress',
               output: {
-                title: 'Screenshot preparation',
-                summary: 'Preparing screenshot from CI run...',
+                title: 'Screenshots preparation',
+                summary: 'Preparing screenshots from CI run...',
               },
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -76,9 +76,9 @@ jobs:
             run_id: runId
           });
           
-          const screenshot = artifacts.data.artifacts.find(a => a.name === 'xvfb-screenshot');
+          const screenshot = artifacts.data.artifacts.find(a => a.name === 'screenshots');
           if (!screenshot) {
-            console.log('No screenshot artifact found');
+            console.log('No screenshots artifact found');
             return;
           }
           
@@ -90,11 +90,11 @@ jobs:
           });
           
           const fs = require('fs');
-          fs.writeFileSync('screenshot.zip', Buffer.from(download.data));
+          fs.writeFileSync('screenshots.zip', Buffer.from(download.data));
 
-    - name: Extract screenshot
+    - name: Extract screenshots
       run: |
-        unzip screenshot.zip
+        unzip screenshots.zip
         ls -la
 
     - name: Checkout ci-artifacts repo
@@ -104,15 +104,16 @@ jobs:
         token: ${{ secrets.ARTIFACTS_REPO_PAT }}
         path: ci-artifacts
 
-    - name: Push screenshot
+    - name: Push screenshots
       working-directory: ci-artifacts
       run: |
         git checkout -b cube23/pr-${{ needs.pr.outputs.number }} || git checkout cube23/pr-${{ needs.pr.outputs.number }}
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
-        cp ../screenshot.png .
+        cp ../screenshot_vk.png . || echo "Vulkan screenshot not found"
+        cp ../screenshot_opengl.png . || echo "OpenGL screenshot not found"
         git add .
-        git commit -m "screenshot for PR #${{ needs.pr.outputs.number }}" || echo "No changes"
+        git commit -m "screenshots for PR #${{ needs.pr.outputs.number }}" || echo "No changes"
         git push origin cube23/pr-${{ needs.pr.outputs.number }} --force
 
     - name: Comment on PR
@@ -120,11 +121,14 @@ jobs:
       with:
         script: |
           const prNumber = ${{ needs.pr.outputs.number }};
-          const screenshotUrl = `https://raw.githubusercontent.com/incognitojam/ci-artifacts/cube23/pr-${prNumber}/screenshot.png`;
+          const vulkanScreenshotUrl = `https://raw.githubusercontent.com/incognitojam/ci-artifacts/cube23/pr-${prNumber}/screenshot_vk.png`;
+          const openglScreenshotUrl = `https://raw.githubusercontent.com/incognitojam/ci-artifacts/cube23/pr-${prNumber}/screenshot_opengl.png`;
 
-          const body = `## 📸 Screenshot
+          const body = `## 📸 Screenshots
 
-          ![Screenshot](${screenshotUrl})`;
+          | Vulkan (cube23_vk) | OpenGL (cube23) |
+          |:---:|:---:|
+          | ![Vulkan Screenshot](${vulkanScreenshotUrl}) | ![OpenGL Screenshot](${openglScreenshotUrl}) |`;
 
           await github.rest.issues.createComment({
             owner: context.repo.owner,
@@ -145,12 +149,12 @@ jobs:
         script: |
           github.rest.checks.update({
             check_run_id: ${{ needs.pr.outputs.check_id }},
-            name: 'Screenshot Preview',
+            name: 'Screenshots Preview',
             head_sha: '${{ github.event.workflow_run.head_sha }}',
             status: 'completed',
             conclusion: '${{ needs.pr-comment.result }}',
             output: {
-              title: 'Screenshot preparation',
+              title: 'Screenshots preparation',
               summary: 'Result: ${{ needs.pr-comment.result }}',
             },
             owner: context.repo.owner,

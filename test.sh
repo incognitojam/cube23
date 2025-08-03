@@ -149,7 +149,7 @@ case "$EXECUTION_MODE" in
         docker run --rm --platform linux/amd64 \
             -v "${WORKSPACE_PATH}:/workspace" \
             -e DISPLAY="${DOCKER_DISPLAY}" \
-            -e CUBE23_TEST_MODE=1 \
+            -e TEST_MODE=1 \
             --add-host host.docker.internal:host-gateway \
             "${IMAGE_NAME}:${IMAGE_TAG}" \
             bash -c "cd build && timeout 10s ./cube23_vk"
@@ -164,7 +164,7 @@ case "$EXECUTION_MODE" in
         docker run --rm --platform linux/amd64 \
             -v "${WORKSPACE_PATH}:/workspace" \
             -e DISPLAY="${DISPLAY}" \
-            -e CUBE23_TEST_MODE=1 \
+            -e TEST_MODE=1 \
             -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
             --network host \
             "${IMAGE_NAME}:${IMAGE_TAG}" \
@@ -172,13 +172,42 @@ case "$EXECUTION_MODE" in
         ;;
     "ci"|"docker_headless"|*)
         echo "🤖 Running cube23_vk headless with xvfb"
-        run "cd build && timeout 10s bash -c 'CUBE23_TEST_MODE=1 xvfb-run -a --server-args=\"-screen 0 800x600x24\" bash -c \"./cube23_vk &
-        sleep 2
-        import -window root /workspace/screenshot.png
+        run "cd build && timeout 10s bash -c 'TEST_MODE=1 xvfb-run -a --server-args=\"-screen 0 800x600x24\" bash -c \"./cube23_vk &
+        sleep 4
+        import -window root /workspace/screenshot_vk.png
         wait\"'"
         ;;
 esac
 
 echo "✅ cube23_vk executed successfully"
+
+# Test running cube23 executable (OpenGL)
+echo "🚀 Testing cube23 execution..."
+
+case "$EXECUTION_MODE" in
+    "linux_x11")
+        echo "🖥️  Running cube23 with X11 forwarding (you should see a window!)"
+
+        docker run --rm --platform linux/amd64 \
+            -v "${WORKSPACE_PATH}:/workspace" \
+            -e DISPLAY="${DISPLAY}" \
+            -e TEST_MODE=1 \
+            -e LIBGL_ALWAYS_SOFTWARE=1 \
+            -e XDG_RUNTIME_DIR=/tmp \
+            -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+            --network host \
+            "${IMAGE_NAME}:${IMAGE_TAG}" \
+            bash -c "cd build && timeout 10s ./cube23"
+        ;;
+    "mac_x11"|"ci"|"docker_headless"|*)
+        echo "🤖 Running cube23 headless with xvfb"
+        run "cd build && timeout 15s bash -c 'TEST_MODE=1 LIBGL_ALWAYS_SOFTWARE=1 XDG_RUNTIME_DIR=/tmp xvfb-run -a --server-args=\"-screen 0 800x600x24\" bash -c \"./cube23 &
+        sleep 4
+        import -window root /workspace/screenshot_opengl.png
+        wait\"'"
+        ;;
+esac
+
+echo "✅ cube23 executed successfully"
 echo "🎉 Build and execution tests completed successfully!"
 echo "🏁 Test script completed successfully"

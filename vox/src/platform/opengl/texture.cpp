@@ -23,13 +23,13 @@ namespace Vox {
             dataFormat = GL_RGB;
         }
 
-        glCreateTextures(GL_TEXTURE_2D, 1, &mRendererID);
-        glTextureStorage2D(mRendererID, 1, internalFormat, mWidth, mHeight);
+        glGenTextures(1, &mRendererID);
+        glBindTexture(GL_TEXTURE_2D, mRendererID);
 
-        glTextureParameteri(mRendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTextureParameteri(mRendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-        glTextureSubImage2D(mRendererID, 0, 0, 0, mWidth, mHeight, dataFormat, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, mWidth, mHeight, 0, dataFormat, GL_UNSIGNED_BYTE, data);
 
         stbi_image_free(data);
     }
@@ -39,6 +39,7 @@ namespace Vox {
     }
 
     void OpenGLTexture2D::bind(const uint32_t slot) const {
-        glBindTextureUnit(slot, mRendererID);
+        glActiveTexture(GL_TEXTURE0 + slot);
+        glBindTexture(GL_TEXTURE_2D, mRendererID);
     }
 }

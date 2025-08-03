@@ -77,6 +77,16 @@ add_executable(cube23 ${Cube_SOURCES})
 target_include_directories(cube23 PRIVATE ${Vox_DIR})
 target_link_libraries(cube23 PRIVATE vox)
 
+# Copy assets for OpenGL app
+add_custom_command(TARGET cube23 POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/cube23/assets/shaders
+    ${CMAKE_CURRENT_BINARY_DIR}/shaders)
+add_custom_command(TARGET cube23 POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/cube23/assets/textures
+    ${CMAKE_CURRENT_BINARY_DIR}/textures)
+
 
 find_package(Vulkan)
 include_directories(${Vulkan_INCLUDE_DIRS})
