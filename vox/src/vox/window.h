@@ -28,6 +28,7 @@ namespace Vox {
         [[nodiscard]] bool isVSync() const;
 
         [[nodiscard]] inline virtual void *getNativeWindow() const { return mWindow; }
+        [[nodiscard]] inline GraphicsContext *getGraphicsContext() const { return mContext; }
 
         static Window *create(const std::string &title = "Vox Engine", int width = 800, int height = 600);
 

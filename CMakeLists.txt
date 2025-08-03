@@ -72,12 +72,18 @@ set(Vox_SOURCES
         vox/src/platform/vulkan/vulkan_texture.h
         vox/src/platform/vulkan/vulkan_vertex_array.cpp
         vox/src/platform/vulkan/vulkan_vertex_array.h
+        vox/src/platform/vulkan/vulkan_context.cpp
+        vox/src/platform/vulkan/vulkan_context.h
+        vox/src/platform/vulkan/vulkan_context_factory.cpp
 )
+
+find_package(Vulkan)
+include_directories(${Vulkan_INCLUDE_DIRS})
 
 add_library(vox STATIC ${Vox_SOURCES})
 target_include_directories(vox PUBLIC ${Vox_DIR})
 target_compile_definitions(vox PUBLIC GLFW_INCLUDE_NONE)
-target_link_libraries(vox PUBLIC glfw glad glm stb_image)
+target_link_libraries(vox PUBLIC glfw glad glm stb_image ${Vulkan_LIBRARIES})
 
 
 set(Cube_DIR cube23/src)
@@ -97,10 +103,6 @@ add_custom_command(TARGET cube23 POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_SOURCE_DIR}/cube23/assets/textures
     ${CMAKE_CURRENT_BINARY_DIR}/textures)
-
-
-find_package(Vulkan)
-include_directories(${Vulkan_INCLUDE_DIRS})
 
 set(CubeVK_SOURCES
         cube23/src/main.cpp

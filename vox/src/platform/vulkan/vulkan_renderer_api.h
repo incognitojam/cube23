@@ -3,6 +3,8 @@
 #include "vox/renderer/renderer_api.h"
 
 namespace Vox {
+    class VulkanContext;
+    
     class VulkanRendererAPI : public RendererAPI {
     public:
         void init() override;
@@ -13,6 +15,8 @@ namespace Vox {
         void drawIndexed(const std::shared_ptr<VertexArray> &vertexArray) override;
 
     private:
+        VulkanContext* getContext();
+        
         glm::vec4 mClearColor = {0.0f, 0.0f, 0.0f, 1.0f};
     };
 }
