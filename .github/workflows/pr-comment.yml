@@ -110,8 +110,9 @@ jobs:
         git checkout -b cube23/pr-${{ needs.pr.outputs.number }} || git checkout cube23/pr-${{ needs.pr.outputs.number }}
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
-        cp ../screenshot_vk.png . || echo "Vulkan screenshot not found"
-        cp ../screenshot_opengl.png . || echo "OpenGL screenshot not found"
+        cp ../screenshot_vk.png . || echo "Standalone Vulkan screenshot not found"
+        cp ../screenshot_opengl.png . || echo "Vox OpenGL screenshot not found"
+        cp ../screenshot_vulkan.png . || echo "Vox Vulkan screenshot not found"
         git add .
         git commit -m "screenshots for PR #${{ needs.pr.outputs.number }}" || echo "No changes"
         git push origin cube23/pr-${{ needs.pr.outputs.number }} --force
@@ -123,9 +124,15 @@ jobs:
           <!-- _(screenshots run_id **${{ github.run_id }}**)_ -->
           ## 📸 Screenshots
 
-          | Vulkan (cube23_vk) | OpenGL (cube23) |
+          ### Standalone Vulkan Demo (cube23_vk)
+          | Vulkan Demo |
+          |:---:|
+          | ![Vulkan Demo](https://raw.githubusercontent.com/incognitojam/ci-artifacts/cube23/pr-${{ needs.pr.outputs.number }}/screenshot_vk.png) |
+
+          ### Vox Engine Renderers (cube23)
+          | OpenGL Backend | Vulkan Backend |
           |:---:|:---:|
-          | ![Vulkan Screenshot](https://raw.githubusercontent.com/incognitojam/ci-artifacts/cube23/pr-${{ needs.pr.outputs.number }}/screenshot_vk.png) | ![OpenGL Screenshot](https://raw.githubusercontent.com/incognitojam/ci-artifacts/cube23/pr-${{ needs.pr.outputs.number }}/screenshot_opengl.png) |
+          | ![Vox OpenGL](https://raw.githubusercontent.com/incognitojam/ci-artifacts/cube23/pr-${{ needs.pr.outputs.number }}/screenshot_opengl.png) | ![Vox Vulkan](https://raw.githubusercontent.com/incognitojam/ci-artifacts/cube23/pr-${{ needs.pr.outputs.number }}/screenshot_vulkan.png) |
         comment-tag: screenshots
         pr-number: ${{ needs.pr.outputs.number }}
         github-token: ${{ secrets.GITHUB_TOKEN }}
