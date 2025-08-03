@@ -33,13 +33,24 @@ namespace Vox {
             s_GLFWInitialized = true;
         }
 
-        // Request OpenGL 3.3 core profile
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        // Set window hints based on renderer API
+        switch (Renderer::getAPI()) {
+            case RendererAPI::API::OpenGL:
+                // Request OpenGL 3.3 core profile
+                glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+                glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+                glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 #if defined(__APPLE__)
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+                glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
+                break;
+            case RendererAPI::API::Vulkan:
+                // Vulkan requires no client API
+                glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+                break;
+            default:
+                throw std::runtime_error("Unknown RendererAPI!");
+        }
 
         return new Window(title, width, height);
     }
