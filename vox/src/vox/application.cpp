@@ -1,6 +1,9 @@
 #include "vox/application.h"
 
 #include <memory>
+#include <chrono>
+#include <cstdlib>
+#include <iostream>
 
 #include "vox/input.h"
 #include "vox/renderer/buffer.h"
@@ -27,6 +30,9 @@ namespace Vox {
     }
 
     void Application::run() {
+        auto startTime = std::chrono::high_resolution_clock::now();
+        const auto testDuration = std::chrono::seconds(3); // Run for 3 seconds in test mode
+
         while (mRunning) {
             mWindow->onUpdate();
 
@@ -34,6 +40,15 @@ namespace Vox {
             const Timestep timestep = time - mLastFrameTime;
             mLastFrameTime = time;
             onUpdate(timestep);
+
+            // Auto-close after testDuration if TEST_MODE environment variable is set
+            if (std::getenv("TEST_MODE")) {
+                auto currentTime = std::chrono::high_resolution_clock::now();
+                if (currentTime - startTime >= testDuration) {
+                    std::cout << "Test mode: auto-closing after " << testDuration.count() << " seconds" << std::endl;
+                    mRunning = false;
+                }
+            }
         }
     }
 

@@ -7,3 +7,5 @@ cmake-build-debug
 
 .DS_Store
 *.log
+
+screenshot*.png

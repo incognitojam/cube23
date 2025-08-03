@@ -306,8 +306,8 @@ private:
             glfwPollEvents();
             drawFrame();
             
-            // Auto-close after testDuration if CUBE23_TEST_MODE environment variable is set
-            if (std::getenv("CUBE23_TEST_MODE")) {
+            // Auto-close after testDuration if TEST_MODE environment variable is set
+            if (std::getenv("TEST_MODE")) {
                 auto currentTime = std::chrono::high_resolution_clock::now();
                 if (currentTime - startTime >= testDuration) {
                     std::cout << "Test mode: auto-closing after " << testDuration.count() << " seconds" << std::endl;
