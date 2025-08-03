@@ -24,6 +24,8 @@ RUN apt-get update && apt-get install -y \
     libxi-dev \
     git \
     curl \
+    xvfb \
+    imagemagick \
     && rm -rf /var/lib/apt/lists/*
 
 # Download and install Vulkan SDK from deterministic tarball
