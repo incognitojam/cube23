@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Project Overview
 
 This is a graphics programming project with two main components:
-1. **Vox** - A custom game engine/renderer framework with OpenGL support
+1. **Vox** - A custom game engine/renderer framework with OpenGL 3.3 Core Profile support
 2. **Cube23** - Applications built on top of Vox, including both OpenGL (`cube23`) and Vulkan (`cube23_vk`) implementations
 
 ## Build System
