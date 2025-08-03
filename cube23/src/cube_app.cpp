@@ -70,23 +70,49 @@ public:
 
         mTexture->bind(0);
 
-        for (int i = 0; i < 150; i++) {
-            float angle = i * 0.3f + mTime * 2.0f;
-            float radius = 0.3f + 0.2f * sin(mTime * 1.5f + i * 0.1f);
-            float x = cos(angle) * radius;
-            float y = sin(angle) * radius;
+        // Central pulsing core
+        float coreScale = 0.2f + 0.1f * sin(mTime * 4.0f);
+        glm::mat4 coreTransform = glm::scale(glm::mat4(1.0f), glm::vec3(coreScale));
+        mTexture->bind(0);
+        Vox::Renderer::submit(shader, mVertexArray, coreTransform);
 
-            float scaleValue = 0.05f + 0.03f * sin(mTime * 3.0f + i * 0.2f);
-            float rotation = mTime * 90.0f + i * 10.0f;
+        // Main flower pattern
+        for (int i = 0; i < 60; i++) {
+        float angle = i * 0.5f + mTime * 1.2f;
+        float radius = 0.25f + 0.15f * sin(mTime * 2.0f + i * 0.12f);
+        float x = cos(angle) * radius;
+        float y = sin(angle) * radius;
+
+        float scaleValue = 0.03f + 0.02f * sin(mTime * 3.5f + i * 0.25f);
+        float rotation = mTime * 150.0f + i * 18.0f;
+
+        glm::vec3 pos(x, y, 0.0f);
+        glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) *
+                                glm::rotate(glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f)) *
+                                glm::scale(glm::mat4(1.0f), glm::vec3(scaleValue));
+
+            if (i % 2 == 0) mTexture->bind(0);
+            else mYingaTexture->bind(0);
+
+            Vox::Renderer::submit(shader, mVertexArray, transform);
+        }
+
+        // Outer orbiting satellites
+        for (int i = 0; i < 8; i++) {
+            float angle = i * 45.0f - mTime * 30.0f;
+            float radius = 0.7f + 0.08f * sin(mTime * 1.5f + i);
+            float x = cos(glm::radians(angle)) * radius;
+            float y = sin(glm::radians(angle)) * radius;
+
+            float scaleValue = 0.06f + 0.03f * sin(mTime * 2.8f + i * 0.8f);
+            float rotation = -mTime * 200.0f + i * 30.0f;
 
             glm::vec3 pos(x, y, 0.0f);
             glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) *
                                 glm::rotate(glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f)) *
                                 glm::scale(glm::mat4(1.0f), glm::vec3(scaleValue));
 
-            if (i % 3 == 0) mTexture->bind(0);
-            else mYingaTexture->bind(0);
-
+            mYingaTexture->bind(0);
             Vox::Renderer::submit(shader, mVertexArray, transform);
         }
 
