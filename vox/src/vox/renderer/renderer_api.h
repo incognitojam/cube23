@@ -1,6 +1,8 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <cstdlib>
+#include <cstring>
 
 #include "vox/renderer/vertex_array.h"
 
@@ -20,9 +22,15 @@ namespace Vox {
 
         virtual void drawIndexed(const std::shared_ptr<VertexArray> &vertexArray) = 0;
 
-        static API getAPI() { return sAPI; }
-
-    private:
-        static API sAPI;
+        static API getAPI() {
+            static API api = []() {
+                const char* renderer = std::getenv("VOX_RENDERER");
+                if (renderer && strcmp(renderer, "vulkan") == 0) {
+                    return API::Vulkan;
+                }
+                return API::OpenGL; // default
+            }();
+            return api;
+        }
     };
 }
