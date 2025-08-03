@@ -181,17 +181,18 @@ esac
 
 echo "✅ cube23_vk executed successfully"
 
-# Test running cube23 executable (OpenGL)
-echo "🚀 Testing cube23 execution..."
+# Test running cube23 executable (OpenGL backend)
+echo "🚀 Testing cube23 execution (OpenGL backend)..."
 
 case "$EXECUTION_MODE" in
     "linux_x11")
-        echo "🖥️  Running cube23 with X11 forwarding (you should see a window!)"
+        echo "🖥️  Running cube23 with OpenGL and X11 forwarding (you should see a window!)"
 
         docker run --rm --platform linux/amd64 \
             -v "${WORKSPACE_PATH}:/workspace" \
             -e DISPLAY="${DISPLAY}" \
             -e TEST_MODE=1 \
+            -e VOX_RENDERER=opengl \
             -e LIBGL_ALWAYS_SOFTWARE=1 \
             -e XDG_RUNTIME_DIR=/tmp \
             -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
@@ -200,14 +201,14 @@ case "$EXECUTION_MODE" in
             bash -c "cd build && timeout 10s ./cube23"
         ;;
     "mac_x11"|"ci"|"docker_headless"|*)
-        echo "🤖 Running cube23 headless with xvfb"
-        run "cd build && timeout 15s bash -c 'TEST_MODE=1 LIBGL_ALWAYS_SOFTWARE=1 XDG_RUNTIME_DIR=/tmp xvfb-run -a --server-args=\"-screen 0 800x600x24\" bash -c \"./cube23 &
+        echo "🤖 Running cube23 headless with OpenGL backend"
+        run "cd build && timeout 15s bash -c 'TEST_MODE=1 VOX_RENDERER=opengl LIBGL_ALWAYS_SOFTWARE=1 XDG_RUNTIME_DIR=/tmp xvfb-run -a --server-args=\"-screen 0 800x600x24\" bash -c \"./cube23 &
         sleep 4
         import -window root /workspace/screenshot_opengl.png
         wait\"'"
         ;;
 esac
 
-echo "✅ cube23 executed successfully"
+echo "✅ cube23 (OpenGL) executed successfully"
 echo "🎉 Build and execution tests completed successfully!"
 echo "🏁 Test script completed successfully"

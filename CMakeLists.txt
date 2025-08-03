@@ -30,7 +30,6 @@ set(Vox_SOURCES
         vox/src/vox/renderer/render_command.h
         vox/src/vox/renderer/renderer.cpp
         vox/src/vox/renderer/renderer.h
-        vox/src/vox/renderer/renderer_api.cpp
         vox/src/vox/renderer/renderer_api.h
         vox/src/vox/renderer/shader.cpp
         vox/src/vox/renderer/shader.h
