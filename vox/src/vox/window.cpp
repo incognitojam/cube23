@@ -10,8 +10,13 @@
 #include "vox/events/key_event.h"
 
 #include "platform/opengl/context.h"
+#include "vox/renderer/renderer.h"
 
 namespace Vox {
+    class VulkanContext;
+    
+    // Factory function to create Vulkan context
+    GraphicsContext* createVulkanContext(GLFWwindow* window);
     static void GLFWErrorCallback(int error, const char *description) {
         std::cerr << "GLFW Error (" << error << "): " << description << std::endl;
     }
@@ -46,14 +51,27 @@ namespace Vox {
             throw std::runtime_error("Failed to create GLFW window!");
         }
 
-        mContext = new OpenGLContext(mWindow);
-        mContext->init();
-
-        glfwMakeContextCurrent(mWindow);
-        int status = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
-        if (!status) {
-            glfwTerminate();
-            throw std::runtime_error("Failed to initialize glad!");
+        // Create appropriate graphics context based on RendererAPI
+        switch (Renderer::getAPI()) {
+            case RendererAPI::API::OpenGL: {
+                mContext = new OpenGLContext(mWindow);
+                mContext->init();
+                
+                glfwMakeContextCurrent(mWindow);
+                int status = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
+                if (!status) {
+                    glfwTerminate();
+                    throw std::runtime_error("Failed to initialize glad!");
+                }
+                break;
+            }
+            case RendererAPI::API::Vulkan:
+                mContext = createVulkanContext(mWindow);
+                mContext->init();
+                break;
+                
+            default:
+                throw std::runtime_error("Unknown RendererAPI!");
         }
         glfwSetWindowUserPointer(mWindow, this);
         setVSync(true);
