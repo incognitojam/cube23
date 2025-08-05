@@ -1,0 +1,44 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug cube23 (OpenGL)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/cmake-build-debug/cube23",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/cmake-build-debug",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "preLaunchTask": "build cube23"
+        },
+        {
+            "name": "Debug cube23 (Vulkan)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/cmake-build-debug/cube23",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/cmake-build-debug",
+            "environment": [{ "name": "VOX_RENDERER", "value": "vulkan" }],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "preLaunchTask": "build cube23"
+        },
+        {
+            "name": "Debug cube23_vk (Vulkan)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/cmake-build-debug/cube23_vk",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/cmake-build-debug",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "preLaunchTask": "build cube23_vk"
+        }
+    ]
+}

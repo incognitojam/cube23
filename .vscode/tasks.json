@@ -1,0 +1,94 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "configure cmake",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "-B",
+                "cmake-build-debug",
+                "-G",
+                "Ninja",
+                "-DCMAKE_BUILD_TYPE=Debug"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "build cube23",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "cmake-build-debug",
+                "--target",
+                "cube23",
+                "-j",
+                "10"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": "configure cmake",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "build cube23_vk",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "cmake-build-debug",
+                "--target",
+                "cube23_vk",
+                "-j",
+                "10"
+            ],
+            "group": "build",
+            "dependsOn": "configure cmake",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "build vox",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "cmake-build-debug",
+                "--target",
+                "vox",
+                "-j",
+                "10"
+            ],
+            "group": "build",
+            "dependsOn": "configure cmake",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": ["$gcc"]
+        }
+    ]
+}
