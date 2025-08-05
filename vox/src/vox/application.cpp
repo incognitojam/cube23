@@ -12,13 +12,13 @@
 namespace Vox {
     Application *Application::sInstance = nullptr;
 
-    Application::Application() {
+    Application::Application(const std::string &name) {
         if (sInstance != nullptr) {
             throw std::runtime_error("Application already exists!");
         }
         sInstance = this;
 
-        mWindow = std::unique_ptr<Window>(Window::create());
+        mWindow = std::unique_ptr<Window>(Window::create(name));
         mWindow->setEventCallback(VX_BIND_EVENT_FN(Application::onEvent));
 
         Renderer::init();

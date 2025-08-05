@@ -6,7 +6,7 @@
 
 class Cube final : public Vox::Application {
 public:
-    Cube() : mCamera(-1.6f, 1.6f, -0.9f, 0.9f), mCameraPosition(0.0f) {
+    Cube() : Application("Cube23"), mCamera(-1.6f, 1.6f, -0.9f, 0.9f), mCameraPosition(0.0f) {
         mVertexArray.reset(Vox::VertexArray::create());
 
         float vertices[5 * 4] = {
