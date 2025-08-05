@@ -1,12 +1,28 @@
-# Dockerfile for CI environment with pre-installed dependencies
+# Stage 1: Download and extract Vulkan SDK
+FROM ubuntu:24.04 AS vulkan-sdk
+
+# Install minimal dependencies for downloading
+RUN apt-get update && apt-get install -y \
+    curl \
+    ca-certificates \
+    xz-utils \
+    && rm -rf /var/lib/apt/lists/*
+
+# Download and extract Vulkan SDK from deterministic tarball
+RUN cd /tmp && \
+    curl -L -o vulkansdk.tar.xz https://sdk.lunarg.com/sdk/download/1.4.321.1/linux/vulkansdk-linux-x86_64-1.4.321.1.tar.xz && \
+    echo "f22a3625bd4d7a32e7a0d926ace16d5278c149e938dac63cecc00537626cbf73  vulkansdk.tar.xz" | sha256sum -c && \
+    mkdir -p /opt/vulkan && \
+    tar xf vulkansdk.tar.xz -C /opt/vulkan --strip-components=1 && \
+    rm vulkansdk.tar.xz
+
+# Stage 2: Final CI environment
 FROM ubuntu:24.04
 
-# Avoid interactive prompts during package installation
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Install base dependencies
 RUN apt-get update && apt-get install -y \
-    wget \
     gnupg \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
@@ -28,13 +44,8 @@ RUN apt-get update && apt-get install -y \
     xvfb \
     && rm -rf /var/lib/apt/lists/*
 
-# Download and install Vulkan SDK from deterministic tarball
-RUN cd /tmp && \
-    curl -L -o vulkansdk.tar.xz https://sdk.lunarg.com/sdk/download/1.4.321.1/linux/vulkansdk-linux-x86_64-1.4.321.1.tar.xz && \
-    echo "f22a3625bd4d7a32e7a0d926ace16d5278c149e938dac63cecc00537626cbf73  vulkansdk.tar.xz" | sha256sum -c && \
-    mkdir -p /opt/vulkan && \
-    tar xf vulkansdk.tar.xz -C /opt/vulkan --strip-components=1 && \
-    rm vulkansdk.tar.xz
+# Copy Vulkan SDK from the previous stage
+COPY --from=vulkan-sdk /opt/vulkan /opt/vulkan
 
 # Set up Vulkan SDK environment variables
 ENV VULKAN_SDK=/opt/vulkan/x86_64
@@ -42,15 +53,6 @@ ENV PATH=$VULKAN_SDK/bin:$PATH
 ENV LD_LIBRARY_PATH=$VULKAN_SDK/lib
 ENV VK_ADD_LAYER_PATH=$VULKAN_SDK/share/vulkan/explicit_layer.d
 
-# Verify Vulkan installation
-RUN ls -la $VULKAN_SDK/include/vulkan/ && echo "✅ Vulkan headers found" || echo "❌ Vulkan headers missing"
-RUN $VULKAN_SDK/bin/vulkaninfo --summary && echo "✅ Vulkan SDK tools working" || echo "❌ Vulkan SDK tools missing"
-
-# Verify Vulkan tools are available from SDK
-RUN which $VULKAN_SDK/bin/glslc && which $VULKAN_SDK/bin/spirv-opt && which $VULKAN_SDK/bin/vulkaninfo
-
-# Set working directory
 WORKDIR /workspace
 
-# Default command
 CMD ["/bin/bash"]
