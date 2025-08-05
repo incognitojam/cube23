@@ -23,15 +23,9 @@ RUN apt-get update && apt-get install -y \
     libxrandr-dev \
     libxi-dev \
     libgl1-mesa-dev \
-    libgl1-mesa-dri \
-    mesa-utils \
-    mesa-utils-extra \
-    libegl1-mesa-dev \
-    libgles2-mesa-dev \
     git \
     curl \
     xvfb \
-    imagemagick \
     && rm -rf /var/lib/apt/lists/*
 
 # Download and install Vulkan SDK from deterministic tarball
