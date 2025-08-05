@@ -18,13 +18,13 @@ The project uses CMake with C++20 standard. Two executables are built:
 ### Build Commands
 
 ```bash
-# Configure and build from cmake-build-debug directory
-cmake --build /path/to/cmake-build-debug --target cube23 -j 10
-cmake --build /path/to/cmake-build-debug --target cube23_vk -j 10
+# Configure and build (from project root)
+cmake -B cmake-build-debug -G Ninja -DCMAKE_BUILD_TYPE=Debug
+cmake --build cmake-build-debug --target cube23 -j 10      # OpenGL app
+cmake --build cmake-build-debug --target cube23_vk -j 10    # Vulkan app
 
-# Or build specific targets
-cmake --build cmake-build-debug --target cube23
-cmake --build cmake-build-debug --target cube23_vk
+# Test/verify build
+./test.sh                                                    # Docker-based CI test
 ```
 
 ### Shader Compilation
@@ -178,3 +178,11 @@ The `notes/` directory contains project documentation and analysis:
 - Implementation notes for future development
 - Research findings and feasibility studies
 - Use this directory for documenting complex changes or architectural decisions
+
+## Code Style
+
+- C++20, `#pragma once`, namespace `Vox` for engine
+- Naming: `camelCase` methods, `mMember` variables, `ClassName` types
+- Headers: system includes first, then local includes with relative paths
+- Smart pointers: `std::shared_ptr`, `std::unique_ptr` with `.reset()` pattern
+- GLM for math, GLFW for windowing, platform abstraction in `platform/opengl/`
