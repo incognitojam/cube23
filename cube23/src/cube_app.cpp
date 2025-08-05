@@ -36,7 +36,7 @@ public:
         mYingaTexture = Vox::Texture2D::create("textures/yinga.png");
 
         shader->bind();
-        std::dynamic_pointer_cast<Vox::OpenGLShader>(shader)->uploadUniformInt("u_texture", 0);
+        shader->setInt("u_texture", 0);
     }
 
     ~Cube() {}
