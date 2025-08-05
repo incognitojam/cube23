@@ -94,31 +94,19 @@ echo "Build directory contents:"
 run "ls -la build/"
 
 echo "Checking for executables:"
-test -f "${WORKSPACE_PATH}/build/cube23" && echo "✅ cube23 executable found" || echo "❌ cube23 not found"
+test -f "${WORKSPACE_PATH}/build/cube23/cube23" && echo "✅ cube23 executable found" || echo "❌ cube23 not found"
 test -f "${WORKSPACE_PATH}/build/vkdemo/vkdemo" && echo "✅ vkdemo executable found" || echo "❌ vkdemo not found"
-test -f "${WORKSPACE_PATH}/build/libvox.a" && echo "✅ libvox.a library found" || echo "❌ libvox.a not found"
+test -f "${WORKSPACE_PATH}/build/vox/libvox.a" && echo "✅ libvox.a library found" || echo "❌ libvox.a not found"
 
 # Verify shader compilation
-echo "Checking for compiled shaders:"
-if [ ! -d "${WORKSPACE_PATH}/build/shaders" ]; then
-    echo "❌ ERROR: Shaders directory not found!"
+echo "Checking for shaders:"
+if [ ! -d "${WORKSPACE_PATH}/build/vkdemo/shaders" ] || \
+   [ ! -f "${WORKSPACE_PATH}/build/vkdemo/shaders/shader.vert.spv" ] || \
+   [ ! -f "${WORKSPACE_PATH}/build/vkdemo/shaders/shader.frag.spv" ]; then
+    echo "❌ ERROR: vkdemo shaders not compiled!"
     exit 1
 fi
-
-echo "Shaders directory exists, checking for required shader files:"
-run "ls -la build/shaders/"
-
-if [ ! -f "${WORKSPACE_PATH}/build/shaders/shader.vert.spv" ]; then
-    echo "❌ ERROR: Vertex shader not compiled!"
-    exit 1
-fi
-
-if [ ! -f "${WORKSPACE_PATH}/build/shaders/shader.frag.spv" ]; then
-    echo "❌ ERROR: Fragment shader not compiled!"
-    exit 1
-fi
-
-echo "✅ All required shaders compiled successfully"
+echo "✅ vkdemo shaders compiled"
 
 # Test running vkdemo executable
 echo "🚀 Testing vkdemo execution..."
@@ -152,7 +140,7 @@ case "$EXECUTION_MODE" in
             -e TEST_MODE=1 \
             --add-host host.docker.internal:host-gateway \
             "${IMAGE_NAME}:${IMAGE_TAG}" \
-            bash -c "cd build && timeout 10s ./vkdemo/vkdemo"
+            bash -c "cd build/vkdemo && timeout 10s ./vkdemo"
         ;;
     "linux_x11")
         echo "🖥️  Running vkdemo with X11 forwarding (you should see a window!)"
@@ -169,11 +157,11 @@ case "$EXECUTION_MODE" in
             -v ~/.Xauthority:/root/.Xauthority:ro \
             --network host \
             "${IMAGE_NAME}:${IMAGE_TAG}" \
-            bash -c "cd build && timeout 10s ./vkdemo/vkdemo"
+            bash -c "cd build/vkdemo && timeout 10s ./vkdemo"
         ;;
     "ci"|"docker_headless"|*)
         echo "🤖 Running vkdemo headless with xvfb"
-        run "cd build && timeout 10s bash -c 'TEST_MODE=1 xvfb-run -a --server-args=\"-screen 0 800x600x24\" bash -c \"./vkdemo/vkdemo &
+        run "cd build/vkdemo && timeout 10s bash -c 'TEST_MODE=1 xvfb-run -a --server-args=\"-screen 0 800x600x24\" bash -c \"./vkdemo &
         sleep 4
         import -window root /workspace/screenshot_vk.png
         wait\"'"
@@ -199,11 +187,11 @@ case "$EXECUTION_MODE" in
             -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
             --network host \
             "${IMAGE_NAME}:${IMAGE_TAG}" \
-            bash -c "cd build && timeout 10s ./cube23"
+            bash -c "cd build/cube23 && timeout 10s ./cube23"
         ;;
     "mac_x11"|"ci"|"docker_headless"|*)
         echo "🤖 Running cube23 headless with OpenGL backend"
-        run "cd build && timeout 15s bash -c 'TEST_MODE=1 VOX_RENDERER=opengl LIBGL_ALWAYS_SOFTWARE=1 XDG_RUNTIME_DIR=/tmp xvfb-run -a --server-args=\"-screen 0 800x600x24\" bash -c \"./cube23 &
+        run "cd build/cube23 && timeout 15s bash -c 'TEST_MODE=1 VOX_RENDERER=opengl LIBGL_ALWAYS_SOFTWARE=1 XDG_RUNTIME_DIR=/tmp xvfb-run -a --server-args=\"-screen 0 800x600x24\" bash -c \"./cube23 &
         sleep 4
         import -window root /workspace/screenshot_opengl.png
         wait\"'"
@@ -228,11 +216,11 @@ case "$EXECUTION_MODE" in
             -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
             --network host \
             "${IMAGE_NAME}:${IMAGE_TAG}" \
-            bash -c "cd build && timeout 10s ./cube23"
+            bash -c "cd build/cube23 && timeout 10s ./cube23"
         ;;
     "mac_x11"|"ci"|"docker_headless"|*)
         echo "🤖 Running cube23 headless with Vulkan backend"
-        run "cd build && timeout 15s bash -c 'TEST_MODE=1 VOX_RENDERER=vulkan XDG_RUNTIME_DIR=/tmp xvfb-run -a --server-args=\"-screen 0 800x600x24\" bash -c \"./cube23 &
+        run "cd build/cube23 && timeout 15s bash -c 'TEST_MODE=1 VOX_RENDERER=vulkan XDG_RUNTIME_DIR=/tmp xvfb-run -a --server-args=\"-screen 0 800x600x24\" bash -c \"./cube23 &
         sleep 4
         import -window root /workspace/screenshot_vulkan.png
         wait\"'" || echo "⚠️  Expected: Vulkan backend may fail due to incomplete rendering pipeline"
