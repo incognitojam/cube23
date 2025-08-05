@@ -13,13 +13,13 @@ namespace Vox {
         void bind() override;
         void unbind() override;
 
-        void setInt(const std::string &name, int value);
-        void setFloat(const std::string &name, float value);
-        void setFloat2(const std::string &name, const glm::vec2 &value);
-        void setFloat3(const std::string &name, const glm::vec3 &value);
-        void setFloat4(const std::string &name, const glm::vec4 &value);
-        void setMat3(const std::string &name, const glm::mat3 &matrix);
-        void setMat4(const std::string &name, const glm::mat4 &matrix);
+        void setInt(const std::string &name, int value) override;
+        void setFloat(const std::string &name, float value) override;
+        void setFloat2(const std::string &name, const glm::vec2 &value) override;
+        void setFloat3(const std::string &name, const glm::vec3 &value) override;
+        void setFloat4(const std::string &name, const glm::vec4 &value) override;
+        void setMat3(const std::string &name, const glm::mat3 &matrix) override;
+        void setMat4(const std::string &name, const glm::mat4 &matrix) override;
 
         const std::string &getName() const override { return mName; }
 
