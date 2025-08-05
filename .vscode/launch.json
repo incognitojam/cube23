@@ -28,17 +28,17 @@
             "preLaunchTask": "build cube23"
         },
         {
-            "name": "Debug cube23_vk (Vulkan)",
+            "name": "Debug vkdemo (Vulkan)",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/cmake-build-debug/cube23_vk",
+            "program": "${workspaceFolder}/cmake-build-debug/vkdemo/vkdemo",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/cmake-build-debug",
             "environment": [],
             "externalConsole": false,
             "MIMode": "lldb",
-            "preLaunchTask": "build cube23_vk"
+            "preLaunchTask": "build vkdemo"
         }
     ]
 }
