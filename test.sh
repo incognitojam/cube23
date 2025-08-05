@@ -11,6 +11,9 @@ set -e
 #   Force headless mode: ./test.sh --headless
 #     - Always uses Docker with xvfb
 #   
+#   Clean build: ./test.sh --clean
+#     - Removes build directory before building
+#   
 #   CI environment: ./test.sh
 #     - Uses pre-built image from workflow, runs tests only
 #     - Automatically detects GitHub Actions environment
@@ -24,11 +27,26 @@ IMAGE_NAME="cube23-ci"
 IMAGE_TAG="latest"
 DOCKERFILE="Dockerfile.ci"
 
-# Check for --headless flag
+# Parse command line flags
 HEADLESS=false
-if [ "$1" = "--headless" ]; then
-    HEADLESS=true
-fi
+CLEAN=false
+for arg in "$@"; do
+    case $arg in
+        --headless)
+            HEADLESS=true
+            ;;
+        --clean)
+            CLEAN=true
+            ;;
+        *)
+            echo "Unknown option: $arg"
+            echo "Usage: $0 [--headless] [--clean]"
+            echo "  --headless  Force headless mode"
+            echo "  --clean     Remove build directory before building"
+            exit 1
+            ;;
+    esac
+done
 
 # Determine workspace path and build command based on environment
 if [ "${GITHUB_ACTIONS}" = "true" ]; then
@@ -78,6 +96,14 @@ if [ "$BUILD_IMAGE" = true ]; then
 fi
 
 echo "🐳 Running container with workspace: ${WORKSPACE_PATH}"
+
+# Clean build directory if requested
+if [ "$CLEAN" = true ]; then
+    echo "🧹 Cleaning build directory..."
+    run "rm -rf build"
+    echo "✅ Build directory cleaned"
+fi
+
 echo "🚀 Starting build process..."
 
 # Configure CMake

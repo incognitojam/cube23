@@ -128,7 +128,42 @@ Assets should be placed in `cube23/assets/` and will be automatically copied to 
 - Shaders: `.vert`, `.frag` GLSL source files
 - Build system handles copying and shader compilation transparently
 
-## CI/CD and Testing
+## Testing Philosophy and CI/CD
+
+**Testing is critical for this project.** Use `./test.sh` for all development and verification.
+
+### Primary Testing Tool: `./test.sh`
+
+**The `./test.sh` script is the primary way to test the application and should be used for test-driven development:**
+
+- **Regression Prevention**: Ensures no regressions are introduced during development
+- **Stress Testing**: Covers as many cases as possible (OpenGL backend, Vulkan backend, different execution environments)
+- **Zero Setup**: Should "just work" without manual directory changes, build cleanup, or environment setup
+- **Fast Iteration**: Optimized for speed to enable rapid development cycles
+
+**Usage:**
+```bash
+# Basic test run
+./test.sh
+
+# Clean build from scratch
+./test.sh --clean
+
+# Force headless mode
+./test.sh --headless
+
+# Test with both flags
+./test.sh --clean --headless
+```
+
+**Key Features:**
+- **Automatic Environment Detection**: Adapts to local (Linux/macOS) vs CI environments
+- **Complete Testing**: Tests both OpenGL and Vulkan backends, vkdemo, and cube23
+- **X11 Display Support**: Properly handles X11 forwarding for GUI applications
+- **Fast Docker Builds**: Uses cached layers and efficient build strategies
+- **Comprehensive Verification**: Checks executables, shaders, asset copying
+
+### CI Workflow
 
 The project includes a Docker-based CI environment with GitHub Actions:
 
@@ -137,19 +172,7 @@ The project includes a Docker-based CI environment with GitHub Actions:
 - BuildKit caching (`type=gha`) speeds up subsequent builds significantly
 - Builds all three targets: `vox` library, `cube23`, and `vkdemo`
 - Verifies shader compilation and asset copying
-
-### Local Testing with Docker
-
-Use the `test.sh` script to replicate the CI environment locally:
-
-```bash
-# Run locally (builds image and tests)
-./test.sh
-
-# Script automatically detects environment:
-# - Local: Builds Docker image then runs tests
-# - GitHub Actions: Uses pre-built image, runs tests only
-```
+- Tests both OpenGL and Vulkan backends
 
 **Docker Image Features:**
 - Ubuntu 24.04 with pre-installed build tools, Vulkan SDK, and X11 libraries
