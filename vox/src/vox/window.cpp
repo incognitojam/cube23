@@ -52,7 +52,20 @@ namespace Vox {
                 throw std::runtime_error("Unknown RendererAPI!");
         }
 
-        return new Window(title, width, height);
+        std::string platformTitle = title;
+        switch (Renderer::getAPI()) {
+            case RendererAPI::API::OpenGL:
+                platformTitle += " (Platform: OpenGL)";
+                break;
+            case RendererAPI::API::Vulkan:
+                platformTitle += " (Platform: Vulkan)";
+                break;
+            default:
+                platformTitle += " (Platform: Unknown)";
+                break;
+        }
+
+        return new Window(platformTitle, width, height);
     }
 
     Window::Window(const std::string &title, int width, int height) : mTitle(title), mWidth(width), mHeight(height) {
