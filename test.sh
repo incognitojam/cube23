@@ -166,6 +166,7 @@ case "$EXECUTION_MODE" in
             -e DISPLAY="${DISPLAY}" \
             -e TEST_MODE=1 \
             -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+            -v ~/.Xauthority:/root/.Xauthority:ro \
             --network host \
             "${IMAGE_NAME}:${IMAGE_TAG}" \
             bash -c "cd build && timeout 10s ./cube23_vk"
