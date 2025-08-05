@@ -7,7 +7,7 @@
 ### ✅ Completed
 - **Vulkan infrastructure**: Complete VulkanContext, VulkanRendererAPI classes
 - **Dynamic context creation**: Window class creates appropriate context based on API
-- **Initialization porting**: All Vulkan setup logic ported from cube23_vk to Vox platform layer
+- **Initialization porting**: All Vulkan setup logic ported from vkdemo to Vox platform layer
 - **Build system**: Vulkan libraries linked, factory pattern prevents header conflicts
 - **Backward compatibility**: OpenGL functionality remains unchanged
 
@@ -24,7 +24,7 @@ Currently, running `./cube23` only tests the OpenGL backend because:
 2. No mechanism exists to select Vulkan at runtime
 3. Vulkan rendering methods are TODO stubs
 
-**Goal**: Enable testing and validation of the Vulkan backend, leading to eventual removal of the standalone `cube23_vk` demo.
+**Goal**: Enable testing and validation of the Vulkan backend, leading to eventual removal of the standalone `vkdemo` demo.
 
 ## Implementation Plan
 
@@ -125,7 +125,7 @@ std::dynamic_pointer_cast<Vox::OpenGLShader>(shader)->uploadUniformInt("u_textur
    - Submit command buffer
 
 3. **VulkanBuffer classes**
-   - Port buffer creation from cube23_vk
+   - Port buffer creation from vkdemo
    - Implement staging buffer uploads
    - Add memory management
 
@@ -153,7 +153,7 @@ std::dynamic_pointer_cast<Vox::OpenGLShader>(shader)->uploadUniformInt("u_textur
 - Validation layer compliance
 
 #### Cleanup Tasks
-- Remove `cube23_vk` standalone demo
+- Remove `vkdemo` standalone demo
 - Update documentation
 - Simplify build system
 - Archive old implementation notes
@@ -168,10 +168,10 @@ std::dynamic_pointer_cast<Vox::OpenGLShader>(shader)->uploadUniformInt("u_textur
 
 ### Medium Priority  
 - [ ] **implement-depth-stencil**: Implement Phase 2: Enhanced Core Features - Add depth/stencil control, viewport management, and basic pipeline state
-- [ ] **validation-testing**: Create cube23_vk_integrated application using new Vulkan backend to validate functionality
+- [ ] **validation-testing**: Create vkdemo_integrated application using new Vulkan backend to validate functionality
 
 ### Low Priority
-- [ ] **cleanup-standalone-vulkan**: Remove cube23_vk standalone demo once Vox Vulkan backend is fully functional
+- [ ] **cleanup-standalone-vulkan**: Remove vkdemo standalone demo once Vox Vulkan backend is fully functional
 
 ## Implementation Strategy
 
@@ -197,8 +197,8 @@ std::dynamic_pointer_cast<Vox::OpenGLShader>(shader)->uploadUniformInt("u_textur
 ## References
 - [Vulkan Backend Analysis](vulkan-backend-analysis.md) - Technical foundation
 - [Renderer API Expansion Plan](renderer-api-expansion-plan.md) - Future roadmap
-- cube23_vk implementation (lines 394-1800) - Reference implementation
+- vkdemo implementation (lines 394-1800) - Reference implementation
 
 ---
 
-*This plan provides a clear path from the current Vulkan infrastructure to a fully functional, testable Vulkan backend that can eventually replace the standalone cube23_vk demo.*
+*This plan provides a clear path from the current Vulkan infrastructure to a fully functional, testable Vulkan backend that can eventually replace the standalone vkdemo demo.*

@@ -95,7 +95,7 @@ run "ls -la build/"
 
 echo "Checking for executables:"
 test -f "${WORKSPACE_PATH}/build/cube23" && echo "✅ cube23 executable found" || echo "❌ cube23 not found"
-test -f "${WORKSPACE_PATH}/build/cube23_vk" && echo "✅ cube23_vk executable found" || echo "❌ cube23_vk not found"
+test -f "${WORKSPACE_PATH}/build/vkdemo/vkdemo" && echo "✅ vkdemo executable found" || echo "❌ vkdemo not found"
 test -f "${WORKSPACE_PATH}/build/libvox.a" && echo "✅ libvox.a library found" || echo "❌ libvox.a not found"
 
 # Verify shader compilation
@@ -120,8 +120,8 @@ fi
 
 echo "✅ All required shaders compiled successfully"
 
-# Test running cube23_vk executable
-echo "🚀 Testing cube23_vk execution..."
+# Test running vkdemo executable
+echo "🚀 Testing vkdemo execution..."
 
 case "$EXECUTION_MODE" in
     "mac_x11")
@@ -135,7 +135,7 @@ case "$EXECUTION_MODE" in
             echo "⚠️  XQuartz network connections may not be enabled. Continuing anyway..."
         fi
 
-        echo "🖥️  Running cube23_vk with X11 forwarding via XQuartz (you should see a window!)"
+        echo "🖥️  Running vkdemo with X11 forwarding via XQuartz (you should see a window!)"
         
         XQUARTZ_DISPLAY=$(echo $DISPLAY | sed 's/.*://')
         DOCKER_DISPLAY="host.docker.internal:${XQUARTZ_DISPLAY}"
@@ -152,10 +152,10 @@ case "$EXECUTION_MODE" in
             -e TEST_MODE=1 \
             --add-host host.docker.internal:host-gateway \
             "${IMAGE_NAME}:${IMAGE_TAG}" \
-            bash -c "cd build && timeout 10s ./cube23_vk"
+            bash -c "cd build && timeout 10s ./vkdemo/vkdemo"
         ;;
     "linux_x11")
-        echo "🖥️  Running cube23_vk with X11 forwarding (you should see a window!)"
+        echo "🖥️  Running vkdemo with X11 forwarding (you should see a window!)"
         
         if command -v xhost >/dev/null 2>&1; then
             xhost +local:docker > /dev/null 2>&1
@@ -169,18 +169,18 @@ case "$EXECUTION_MODE" in
             -v ~/.Xauthority:/root/.Xauthority:ro \
             --network host \
             "${IMAGE_NAME}:${IMAGE_TAG}" \
-            bash -c "cd build && timeout 10s ./cube23_vk"
+            bash -c "cd build && timeout 10s ./vkdemo/vkdemo"
         ;;
     "ci"|"docker_headless"|*)
-        echo "🤖 Running cube23_vk headless with xvfb"
-        run "cd build && timeout 10s bash -c 'TEST_MODE=1 xvfb-run -a --server-args=\"-screen 0 800x600x24\" bash -c \"./cube23_vk &
+        echo "🤖 Running vkdemo headless with xvfb"
+        run "cd build && timeout 10s bash -c 'TEST_MODE=1 xvfb-run -a --server-args=\"-screen 0 800x600x24\" bash -c \"./vkdemo/vkdemo &
         sleep 4
         import -window root /workspace/screenshot_vk.png
         wait\"'"
         ;;
 esac
 
-echo "✅ cube23_vk executed successfully"
+echo "✅ vkdemo executed successfully"
 
 # Test running cube23 executable (OpenGL backend)
 echo "🚀 Testing cube23 execution (OpenGL backend)..."

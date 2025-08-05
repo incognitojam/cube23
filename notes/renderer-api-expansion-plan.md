@@ -40,7 +40,7 @@ Transform the RendererAPI into a comprehensive graphics abstraction that support
 3. **Update factory methods** in existing renderer components to support Vulkan backend
 
 ### Priority Features for Phase 1
-- Basic rendering (already working in cube23_vk)
+- Basic rendering (already working in vkdemo)
 - Swapchain management with window resize support
 - Command buffer recording and submission
 - Basic synchronization (semaphores, fences)
@@ -71,7 +71,7 @@ virtual void setWireframe(bool enabled) = 0;
 virtual void setPrimitiveTopology(PrimitiveType type) = 0;
 ```
 
-**Reference Implementation**: cube23_vk lines 790-833 (pipeline state configuration)
+**Reference Implementation**: vkdemo lines 790-833 (pipeline state configuration)
 
 **Estimated Timeline**: 1 week
 
@@ -100,7 +100,7 @@ virtual void memoryBarrier(BarrierType type) = 0;
 virtual void dispatchIndirect(const std::shared_ptr<Buffer>& cmdBuffer) = 0;
 ```
 
-**Reference Implementation**: Vulkan compute concepts can be added using cube23_vk's command buffer system
+**Reference Implementation**: Vulkan compute concepts can be added using vkdemo's command buffer system
 
 **Estimated Timeline**: 2-3 weeks
 
@@ -154,7 +154,7 @@ virtual void writeTimestamp(std::shared_ptr<TimestampQuery> query) = 0;
    - Handle primary vs secondary command buffers
    - Manage command buffer lifecycle
 
-2. **Memory Management**: Port from cube23_vk implementation
+2. **Memory Management**: Port from vkdemo implementation
    - Buffer/image allocation functions (lines 908-936, 1032-1066)
    - Memory type selection (lines 1309-1322)
    - Staging buffer optimization (lines 1202-1232)
@@ -171,7 +171,7 @@ virtual void writeTimestamp(std::shared_ptr<TimestampQuery> query) = 0;
 
 ### Testing Strategy
 1. **Maintain existing cube23 application** as OpenGL reference
-2. **Create cube23_vk_integrated** using new Vulkan backend
+2. **Create vkdemo_integrated** using new Vulkan backend
 3. **Compare rendering output** between OpenGL and Vulkan versions
 4. **Performance benchmarking** between APIs
 
@@ -218,4 +218,4 @@ virtual void writeTimestamp(std::shared_ptr<TimestampQuery> query) = 0;
 
 ---
 
-*This plan leverages the existing comprehensive Vulkan implementation in cube23_vk as a reference, significantly reducing implementation risk and development time.*
+*This plan leverages the existing comprehensive Vulkan implementation in vkdemo as a reference, significantly reducing implementation risk and development time.*

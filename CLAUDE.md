@@ -4,27 +4,28 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a graphics programming project with two main components:
-1. **Vox** - A custom game engine/renderer framework with OpenGL 3.3 Core Profile support
-2. **Cube23** - Applications built on top of Vox, including both OpenGL (`cube23`) and Vulkan (`cube23_vk`) implementations
+This is a graphics programming project with three main components:
+1. **Vox** - A custom game engine/renderer framework with OpenGL 3.3 Core Profile support and Vulkan backend work-in-progress
+2. **Cube23** - An application built on top of Vox
+3. **vkdemo** - A standalone Vulkan proof-of-concept that serves as reference implementation for the Vox Vulkan backend development
 
 ## Build System
 
 The project uses CMake with C++20 standard. Two executables are built:
 
 - `cube23` - OpenGL-based application using the Vox engine
-- `cube23_vk` - Standalone Vulkan application with comprehensive 3D rendering
+- `vkdemo` - Standalone Vulkan application with comprehensive 3D rendering
 
 ### Build Commands
 
 ```bash
 # Configure and build (from project root)
 cmake -B cmake-build-debug -G Ninja -DCMAKE_BUILD_TYPE=Debug
-cmake --build cmake-build-debug --target cube23 -j 10      # OpenGL app
-cmake --build cmake-build-debug --target cube23_vk -j 10    # Vulkan app
+cmake --build cmake-build-debug --target cube23 -j 10  # OpenGL app
+cmake --build cmake-build-debug --target vkdemo -j 10  # Vulkan app
 
 # Test/verify build
-./test.sh                                                    # Docker-based CI test
+./test.sh                                              # Docker-based CI test
 ```
 
 ### Shader Compilation
@@ -74,7 +75,7 @@ Applications inherit from `Vox::Application` and implement:
 - Shader library management
 - Multiple texture switching
 
-**cube23_vk (Vulkan):** Standalone Vulkan implementation featuring:
+**vkdemo (Vulkan):** Standalone Vulkan implementation featuring:
 - Complete Vulkan initialization with validation layers
 - 3D perspective camera with model-view-projection matrices
 - Cube geometry with vertex colors and texture coordinates
@@ -90,7 +91,7 @@ Applications inherit from `Vox::Application` and implement:
 - **GLM** - Mathematics library
 - **GLAD** - OpenGL loader (Vox engine only)
 - **STB** - Image loading for textures
-- **Vulkan SDK** - Vulkan API (cube23_vk only)
+- **Vulkan SDK** - Vulkan API (vkdemo only)
 
 ## Development Notes
 
@@ -115,10 +116,10 @@ Applications inherit from `Vox::Application` and implement:
 
 Current status:
 - **OpenGL**: Fully supported through Vox engine abstraction
-- **Vulkan**: Complete standalone implementation in cube23_vk
+- **Vulkan**: Complete standalone implementation in vkdemo
 - **Future**: Vulkan backend could be integrated into Vox's platform abstraction
 
-The cube23_vk application serves as a reference implementation for Vulkan features that could potentially be integrated into the Vox engine's renderer abstraction layer.
+The vkdemo application serves as a reference implementation for Vulkan features that could potentially be integrated into the Vox engine's renderer abstraction layer.
 
 ### Asset Pipeline
 
@@ -134,7 +135,7 @@ The project includes a Docker-based CI environment with GitHub Actions:
 **CI Workflow:**
 - Uses `Dockerfile.ci` to create a pre-built environment with all dependencies
 - BuildKit caching (`type=gha`) speeds up subsequent builds significantly
-- Builds all three targets: `vox` library, `cube23`, and `cube23_vk`
+- Builds all three targets: `vox` library, `cube23`, and `vkdemo`
 - Verifies shader compilation and asset copying
 
 ### Local Testing with Docker
