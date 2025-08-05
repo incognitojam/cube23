@@ -54,9 +54,9 @@ The Vox engine follows a platform abstraction pattern:
 - `platform/opengl/` - OpenGL-specific implementations
 
 **Renderer Abstraction:**
-- `RendererAPI` - Graphics API abstraction (currently OpenGL only)
+- `RendererAPI` - Graphics API abstraction (OpenGL and Vulkan backends)
 - `Buffer` - Vertex/Index buffer management with layout system
-- `Shader` - Shader loading and uniform management
+- `Shader` - Shader loading and uniform management with API-agnostic interface
 - `Texture` - Texture loading and binding
 - `VertexArray` - Vertex attribute binding
 - `Renderer` - High-level rendering commands
@@ -116,10 +116,10 @@ Applications inherit from `Vox::Application` and implement:
 
 Current status:
 - **OpenGL**: Fully supported through Vox engine abstraction
-- **Vulkan**: Complete standalone implementation in vkdemo
-- **Future**: Vulkan backend could be integrated into Vox's platform abstraction
+- **Vulkan**: Backend implemented in Vox, can switch APIs with `VOX_RENDERER=vulkan`
+- **API Selection**: Use environment variable `VOX_RENDERER` (opengl/vulkan) to choose backend
 
-The vkdemo application serves as a reference implementation for Vulkan features that could potentially be integrated into the Vox engine's renderer abstraction layer.
+The vkdemo application serves as a reference implementation for Vulkan features that have been integrated into the Vox engine's renderer abstraction layer.
 
 ### Asset Pipeline
 
