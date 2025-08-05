@@ -10,7 +10,7 @@
 namespace Vox {
     class Application {
     public:
-        Application();
+        explicit Application(const std::string &name);
         virtual ~Application() = default;
 
         virtual void run();
