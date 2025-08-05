@@ -178,7 +178,10 @@ namespace Vox {
     }
 
     void Window::setVSync(bool enabled) {
-        glfwSwapInterval(enabled ? 1 : 0);
+        // TODO: For Vulkan, implement VSync through swapchain present mode (VK_PRESENT_MODE_FIFO_KHR vs VK_PRESENT_MODE_IMMEDIATE_KHR)
+        if (RendererAPI::getAPI() == RendererAPI::API::OpenGL) {
+            glfwSwapInterval(enabled ? 1 : 0);
+        }
         mVSync = enabled;
     }
 
