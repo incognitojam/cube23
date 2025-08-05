@@ -124,7 +124,7 @@ jobs:
           <!-- _(screenshots run_id **${{ github.run_id }}**)_ -->
           ## 📸 Screenshots
 
-          ### Standalone Vulkan Demo (cube23_vk)
+          ### Standalone Vulkan Demo (vkdemo)
           | Vulkan Demo |
           |:---:|
           | ![Vulkan Demo](https://raw.githubusercontent.com/incognitojam/ci-artifacts/cube23/pr-${{ needs.pr.outputs.number }}/screenshot_vk.png) |
