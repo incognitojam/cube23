@@ -47,14 +47,14 @@
             "problemMatcher": ["$gcc"]
         },
         {
-            "label": "build cube23_vk",
+            "label": "build vkdemo",
             "type": "shell",
             "command": "cmake",
             "args": [
                 "--build",
                 "cmake-build-debug",
                 "--target",
-                "cube23_vk",
+                "vkdemo",
                 "-j",
                 "10"
             ],
