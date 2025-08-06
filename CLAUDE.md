@@ -1,6 +1,18 @@
-# CLAUDE.md
+# AGENT.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to AI coding agents when working with code in this repository.
+
+## 🚨 CRITICAL: Always Use test.sh for Verification
+
+**BEFORE making any changes and AFTER any modifications, you MUST run `./test.sh` to verify the build works correctly.**
+
+The test.sh script is the primary testing tool and:
+- Tests both OpenGL and Vulkan backends in a clean Docker environment
+- Catches compilation errors that may not appear in local builds
+- Verifies that changes work across different platforms (Linux/macOS)
+- Should be used for every development iteration
+
+**Usage**: Simply run `./test.sh` from the project root. Do not skip this step.
 
 ## Project Overview
 
