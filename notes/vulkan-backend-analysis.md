@@ -4,7 +4,7 @@
 
 ## Executive Summary
 
-The cube23 project contains a comprehensive Vulkan implementation that covers **all the core functionality** needed to create a Vulkan backend for the vox renderer. The vox renderer has a clean abstraction architecture that would easily accommodate a Vulkan implementation alongside the existing OpenGL backend.
+The vkdemo project contains a comprehensive Vulkan implementation that covers **all the core functionality** needed to create a Vulkan backend for the vox renderer. The vox renderer has a clean abstraction architecture that would easily accommodate a Vulkan implementation alongside the existing OpenGL backend.
 
 **Status: HIGHLY READY for Vulkan backend implementation**
 
@@ -59,7 +59,7 @@ The vox renderer uses a clean abstraction pattern with the following key compone
   - Transform matrix handling
   - Submit-based rendering
 
-## Vulkan Implementation in cube23/src/main.cpp
+## Vulkan Implementation in vkdemo/src/main.cpp
 
 ### ✅ Complete Core Systems
 
@@ -97,7 +97,7 @@ The vox renderer uses a clean abstraction pattern with the following key compone
 
 ### Vertex Data Structure
 
-The cube23 implementation includes a sophisticated vertex system:
+The vkdemo implementation includes a sophisticated vertex system:
 
 ```cpp
 struct Vertex {
@@ -152,7 +152,7 @@ This maps well to vox's `BufferElement` and `BufferLayout` system.
 
 ### Memory Management
 - **OpenGL**: Driver-managed
-- **Vulkan**: Manual allocation (already implemented in cube23)
+- **Vulkan**: Manual allocation (already implemented in vkdemo)
 - **Solution**: Wrap existing buffer/image creation functions
 
 ### Command Recording
@@ -205,7 +205,7 @@ This maps well to vox's `BufferElement` and `BufferLayout` system.
 
 ## Conclusion
 
-The cube23 project provides an excellent foundation for implementing a Vulkan backend in vox. All the complex Vulkan functionality is already working:
+The vkdemo project provides an excellent foundation for implementing a Vulkan backend in vox. All the complex Vulkan functionality is already working:
 
 - **Memory management** ✅
 - **Synchronization** ✅  
