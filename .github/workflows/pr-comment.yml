@@ -110,9 +110,8 @@ jobs:
         git checkout -b cube23/pr-${{ needs.pr.outputs.number }} || git checkout cube23/pr-${{ needs.pr.outputs.number }}
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
-        cp ../screenshot_vk.png . || echo "Standalone Vulkan screenshot not found"
+        cp ../screenshot_vkdemo.png . || echo "Standalone Vulkan screenshot not found"
         cp ../screenshot_opengl.png . || echo "Vox OpenGL screenshot not found"
-        cp ../screenshot_vulkan.png . || echo "Vox Vulkan screenshot not found"
         git add .
         git commit -m "screenshots for PR #${{ needs.pr.outputs.number }}" || echo "No changes"
         git push origin cube23/pr-${{ needs.pr.outputs.number }} --force
@@ -127,12 +126,12 @@ jobs:
           ### Standalone Vulkan Demo (vkdemo)
           | Vulkan Demo |
           |:---:|
-          | ![Vulkan Demo](https://raw.githubusercontent.com/incognitojam/ci-artifacts/cube23/pr-${{ needs.pr.outputs.number }}/screenshot_vk.png) |
+          | ![Vulkan Demo](https://raw.githubusercontent.com/incognitojam/ci-artifacts/cube23/pr-${{ needs.pr.outputs.number }}/screenshot_vkdemo.png) |
 
-          ### Vox Engine Renderers (cube23)
-          | OpenGL Backend | Vulkan Backend |
-          |:---:|:---:|
-          | ![Vox OpenGL](https://raw.githubusercontent.com/incognitojam/ci-artifacts/cube23/pr-${{ needs.pr.outputs.number }}/screenshot_opengl.png) | ![Vox Vulkan](https://raw.githubusercontent.com/incognitojam/ci-artifacts/cube23/pr-${{ needs.pr.outputs.number }}/screenshot_vulkan.png) |
+          ### Vox Engine Renderer (cube23)
+          | OpenGL Backend |
+          |:---:|
+          | ![Vox OpenGL](https://raw.githubusercontent.com/incognitojam/ci-artifacts/cube23/pr-${{ needs.pr.outputs.number }}/screenshot_opengl.png) |
         comment-tag: screenshots
         pr-number: ${{ needs.pr.outputs.number }}
         github-token: ${{ secrets.GITHUB_TOKEN }}

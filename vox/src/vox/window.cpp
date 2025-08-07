@@ -13,10 +13,6 @@
 #include "vox/renderer/renderer.h"
 
 namespace Vox {
-    class VulkanContext;
-    
-    // Factory function to create Vulkan context
-    GraphicsContext* createVulkanContext(GLFWwindow* window);
     static void GLFWErrorCallback(int error, const char *description) {
         std::cerr << "GLFW Error (" << error << "): " << description << std::endl;
     }
@@ -33,37 +29,15 @@ namespace Vox {
             s_GLFWInitialized = true;
         }
 
-        // Set window hints based on renderer API
-        switch (Renderer::getAPI()) {
-            case RendererAPI::API::OpenGL:
-                // Request OpenGL 3.3 core profile
-                glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-                glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-                glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        // Request OpenGL 3.3 core profile
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 #if defined(__APPLE__)
-                glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
-                break;
-            case RendererAPI::API::Vulkan:
-                // Vulkan requires no client API
-                glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-                break;
-            default:
-                throw std::runtime_error("Unknown RendererAPI!");
-        }
 
-        std::string platformTitle = title;
-        switch (Renderer::getAPI()) {
-            case RendererAPI::API::OpenGL:
-                platformTitle += " (Platform: OpenGL)";
-                break;
-            case RendererAPI::API::Vulkan:
-                platformTitle += " (Platform: Vulkan)";
-                break;
-            default:
-                platformTitle += " (Platform: Unknown)";
-                break;
-        }
+        std::string platformTitle = title + " (Platform: OpenGL)";
 
         return new Window(platformTitle, width, height);
     }
@@ -75,27 +49,15 @@ namespace Vox {
             throw std::runtime_error("Failed to create GLFW window!");
         }
 
-        // Create appropriate graphics context based on RendererAPI
-        switch (Renderer::getAPI()) {
-            case RendererAPI::API::OpenGL: {
-                mContext = new OpenGLContext(mWindow);
-                mContext->init();
-                
-                glfwMakeContextCurrent(mWindow);
-                int status = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
-                if (!status) {
-                    glfwTerminate();
-                    throw std::runtime_error("Failed to initialize glad!");
-                }
-                break;
-            }
-            case RendererAPI::API::Vulkan:
-                mContext = createVulkanContext(mWindow);
-                mContext->init();
-                break;
-                
-            default:
-                throw std::runtime_error("Unknown RendererAPI!");
+        // Create OpenGL graphics context
+        mContext = new OpenGLContext(mWindow);
+        mContext->init();
+        
+        glfwMakeContextCurrent(mWindow);
+        int status = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
+        if (!status) {
+            glfwTerminate();
+            throw std::runtime_error("Failed to initialize glad!");
         }
         glfwSetWindowUserPointer(mWindow, this);
         setVSync(true);
@@ -191,10 +153,7 @@ namespace Vox {
     }
 
     void Window::setVSync(bool enabled) {
-        // TODO: For Vulkan, implement VSync through swapchain present mode (VK_PRESENT_MODE_FIFO_KHR vs VK_PRESENT_MODE_IMMEDIATE_KHR)
-        if (RendererAPI::getAPI() == RendererAPI::API::OpenGL) {
-            glfwSwapInterval(enabled ? 1 : 0);
-        }
+        glfwSwapInterval(enabled ? 1 : 0);
         mVSync = enabled;
     }
 
