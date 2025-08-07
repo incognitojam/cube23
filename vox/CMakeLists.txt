@@ -54,26 +54,9 @@ set(Vox_SOURCES
         src/platform/opengl/texture.h
         src/platform/opengl/vertex_array.cpp
         src/platform/opengl/vertex_array.h
-
-        src/platform/vulkan/vulkan_buffer.cpp
-        src/platform/vulkan/vulkan_buffer.h
-        src/platform/vulkan/vulkan_renderer_api.cpp
-        src/platform/vulkan/vulkan_renderer_api.h
-        src/platform/vulkan/vulkan_shader.cpp
-        src/platform/vulkan/vulkan_shader.h
-        src/platform/vulkan/vulkan_texture.cpp
-        src/platform/vulkan/vulkan_texture.h
-        src/platform/vulkan/vulkan_vertex_array.cpp
-        src/platform/vulkan/vulkan_vertex_array.h
-        src/platform/vulkan/vulkan_context.cpp
-        src/platform/vulkan/vulkan_context.h
-        src/platform/vulkan/vulkan_context_factory.cpp
 )
-
-find_package(Vulkan)
-include_directories(${Vulkan_INCLUDE_DIRS})
 
 add_library(vox STATIC ${Vox_SOURCES})
 target_include_directories(vox PUBLIC ${Vox_DIR})
 target_compile_definitions(vox PUBLIC GLFW_INCLUDE_NONE)
-target_link_libraries(vox PUBLIC glfw glad glm stb_image ${Vulkan_LIBRARIES})
+target_link_libraries(vox PUBLIC glfw glad glm stb_image)

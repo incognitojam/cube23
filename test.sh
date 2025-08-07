@@ -214,7 +214,7 @@ case "$EXECUTION_MODE" in
         echo "🤖 Running vkdemo headless with xvfb"
         run "cd build/vkdemo && timeout 10s bash -c 'TEST_MODE=1 xvfb-run -a --server-args=\"-screen 0 800x600x24\" bash -c \"./vkdemo &
         sleep 4
-        import -window root /workspace/screenshot_vk.png
+        import -window root /workspace/screenshot_vkdemo.png
         wait\"'"
         ;;
 esac
@@ -257,25 +257,6 @@ esac
 
 echo "✅ cube23 (OpenGL) executed successfully"
 
-# Test running cube23 executable (Vulkan backend)
-echo "🚀 Testing cube23 execution (Vulkan backend)..."
 
-case "$EXECUTION_MODE" in
-    "linux_local")
-        echo "🖥️  Running cube23 natively with Vulkan"
-        cd build/cube23
-        TEST_MODE=1 VOX_RENDERER=vulkan timeout 10s ./cube23 || echo "⚠️  Expected: Vulkan backend may fail due to incomplete rendering pipeline"
-        cd - > /dev/null
-        ;;
-    "mac_x11"|"ci"|"docker_headless"|*)
-        echo "🤖 Running cube23 headless with Vulkan backend"
-        run "cd build/cube23 && timeout 15s bash -c 'TEST_MODE=1 VOX_RENDERER=vulkan XDG_RUNTIME_DIR=/tmp xvfb-run -a --server-args=\"-screen 0 800x600x24\" bash -c \"./cube23 &
-        sleep 4
-        import -window root /workspace/screenshot_vulkan.png
-        wait\"'" || echo "⚠️  Expected: Vulkan backend may fail due to incomplete rendering pipeline"
-        ;;
-esac
-
-echo "✅ cube23 (Vulkan) test completed (may have expected failures)"
 echo "🎉 Build and execution tests completed successfully!"
 echo "🏁 Test script completed successfully"

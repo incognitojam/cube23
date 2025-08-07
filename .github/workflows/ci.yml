@@ -43,8 +43,7 @@ jobs:
       with:
         name: screenshots
         path: |
-          screenshot_vk.png
+          screenshot_vkdemo.png
           screenshot_opengl.png
-          screenshot_vulkan.png
         if-no-files-found: warn
         retention-days: 1

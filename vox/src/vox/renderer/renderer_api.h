@@ -12,7 +12,6 @@ namespace Vox {
         enum class API {
             None = 0,
             OpenGL = 1,
-            Vulkan = 2,
         };
 
         virtual void init() = 0;
@@ -23,14 +22,7 @@ namespace Vox {
         virtual void drawIndexed(const std::shared_ptr<VertexArray> &vertexArray) = 0;
 
         static API getAPI() {
-            static API api = []() {
-                const char* renderer = std::getenv("VOX_RENDERER");
-                if (renderer && strcmp(renderer, "vulkan") == 0) {
-                    return API::Vulkan;
-                }
-                return API::OpenGL; // default
-            }();
-            return api;
+            return API::OpenGL;
         }
     };
 }
