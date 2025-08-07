@@ -3,6 +3,7 @@
 #include "vox/renderer/orthographic_camera.h"
 #include "vox/renderer/render_command.h"
 #include "vox/renderer/shader.h"
+#include "vox/renderer/buffer.h"
 
 namespace Vox {
     class Renderer {
@@ -23,5 +24,7 @@ namespace Vox {
         };
 
         static SceneData *sSceneData;
+        static std::shared_ptr<UniformBuffer> sCameraUniformBuffer;
+        static std::shared_ptr<UniformBuffer> sObjectUniformBuffer;
     };
 }

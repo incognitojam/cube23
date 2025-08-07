@@ -38,4 +38,28 @@ namespace Vox {
     void OpenGLIndexBuffer::unbind() const {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
+
+    OpenGLUniformBuffer::OpenGLUniformBuffer(uint32_t size, uint32_t binding) : mBinding(binding) {
+        glGenBuffers(1, &mRendererID);
+        glBindBuffer(GL_UNIFORM_BUFFER, mRendererID);
+        glBufferData(GL_UNIFORM_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
+        glBindBufferBase(GL_UNIFORM_BUFFER, binding, mRendererID);
+    }
+
+    OpenGLUniformBuffer::~OpenGLUniformBuffer() {
+        glDeleteBuffers(1, &mRendererID);
+    }
+
+    void OpenGLUniformBuffer::bind() const {
+        glBindBuffer(GL_UNIFORM_BUFFER, mRendererID);
+    }
+
+    void OpenGLUniformBuffer::unbind() const {
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    }
+
+    void OpenGLUniformBuffer::setData(const void* data, uint32_t size, uint32_t offset) {
+        glBindBuffer(GL_UNIFORM_BUFFER, mRendererID);
+        glBufferSubData(GL_UNIFORM_BUFFER, offset, size, data);
+    }
 }
