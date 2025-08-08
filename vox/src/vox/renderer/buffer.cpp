@@ -35,8 +35,6 @@ namespace Vox {
                 throw std::runtime_error("RendererAPI::None is currently not supported!");
             case RendererAPI::API::OpenGL:
                 return std::make_shared<OpenGLUniformBuffer>(size, binding);
-            case RendererAPI::API::Vulkan:
-                return std::make_shared<VulkanUniformBuffer>(size, binding);
             default:
                 throw std::runtime_error("Unknown RendererAPI!");
         }

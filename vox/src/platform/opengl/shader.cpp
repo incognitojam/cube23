@@ -6,8 +6,9 @@
 #include <vector>
 
 #include <glad/glad.h>
-
 #include <glm/gtc/type_ptr.hpp>
+#include <spirv_cross.hpp>
+#include <spirv_glsl.hpp>
 
 namespace Vox {
     static GLenum getShaderTypeFromString(const std::string &type) {
@@ -38,6 +39,17 @@ namespace Vox {
         compile(sources);
     }
 
+    OpenGLShader::OpenGLShader(const std::string &name, const std::string &vertexSpvPath, 
+                               const std::string &fragmentSpvPath, bool isSpirv) : mName(name) {
+        if (isSpirv) {
+            std::unordered_map<GLenum, std::vector<uint32_t>> spirvSources;
+            spirvSources[GL_VERTEX_SHADER] = readSpirv(vertexSpvPath);
+            spirvSources[GL_FRAGMENT_SHADER] = readSpirv(fragmentSpvPath);
+            compileSpirv(spirvSources);
+            reflectSpirv(spirvSources[GL_VERTEX_SHADER], spirvSources[GL_FRAGMENT_SHADER]);
+        }
+    }
+
     OpenGLShader::~OpenGLShader() {
         glDeleteProgram(mRendererID);
     }
@@ -54,6 +66,22 @@ namespace Vox {
         in.read(&result[0], result.size());
         in.close();
         return result;
+    }
+
+    std::vector<uint32_t> OpenGLShader::readSpirv(const std::string &filepath) {
+        std::ifstream file(filepath, std::ios::binary | std::ios::ate);
+        if (!file.is_open()) {
+            throw std::runtime_error("Could not open SPIR-V file '" + filepath + "'!");
+        }
+
+        size_t fileSize = file.tellg();
+        std::vector<uint32_t> buffer(fileSize / sizeof(uint32_t));
+        
+        file.seekg(0);
+        file.read(reinterpret_cast<char*>(buffer.data()), fileSize);
+        file.close();
+        
+        return buffer;
     }
 
     std::unordered_map<GLenum, std::string> OpenGLShader::preprocess(const std::string &source) {
@@ -190,5 +218,88 @@ namespace Vox {
     void OpenGLShader::setMat4(const std::string &name, const glm::mat4 &matrix) {
         const GLint location = glGetUniformLocation(mRendererID, name.c_str());
         glUniformMatrix4fv(location, 1, GL_FALSE, value_ptr(matrix));
+    }
+
+    void OpenGLShader::compileSpirv(const std::unordered_map<GLenum, std::vector<uint32_t>> &shaderSources) {
+        if (shaderSources.size() > 2) {
+            throw std::runtime_error("Only 2 shaders are supported for now!");
+        }
+
+        // Convert SPIR-V to GLSL using spirv-cross
+        std::unordered_map<GLenum, std::string> glslSources;
+        
+        for (const auto &[type, spirv] : shaderSources) {
+            spirv_cross::CompilerGLSL glsl(spirv);
+            spirv_cross::CompilerGLSL::Options options;
+            options.version = 330;
+            options.es = false;
+            glsl.set_common_options(options);
+            
+            glslSources[type] = glsl.compile();
+        }
+        
+        // Use existing compile method with converted GLSL
+        compile(glslSources);
+    }
+
+    void OpenGLShader::reflectSpirv(const std::vector<uint32_t> &vertexSpirv, const std::vector<uint32_t> &fragmentSpirv) {
+        // Reflect vertex shader
+        spirv_cross::Compiler vertexCompiler(vertexSpirv);
+        spirv_cross::ShaderResources vertexResources = vertexCompiler.get_shader_resources();
+        
+        // Process uniform buffers
+        for (const auto &resource : vertexResources.uniform_buffers) {
+            ShaderUniformBuffer buffer;
+            buffer.name = resource.name;
+            buffer.binding = vertexCompiler.get_decoration(resource.id, spv::DecorationBinding);
+            
+            const spirv_cross::SPIRType &type = vertexCompiler.get_type(resource.base_type_id);
+            buffer.size = vertexCompiler.get_declared_struct_size(type);
+            
+            // Get members of the uniform buffer
+            for (uint32_t i = 0; i < type.member_types.size(); ++i) {
+                ShaderUniform uniform;
+                uniform.name = vertexCompiler.get_member_name(resource.base_type_id, i);
+                uniform.offset = vertexCompiler.type_struct_member_offset(type, i);
+                
+                const spirv_cross::SPIRType &memberType = vertexCompiler.get_type(type.member_types[i]);
+                uniform.size = vertexCompiler.get_declared_struct_member_size(type, i);
+                
+                // Map SPIR-V types to our enum
+                if (memberType.basetype == spirv_cross::SPIRType::Float) {
+                    if (memberType.vecsize == 1) uniform.type = ShaderUniformType::Float;
+                    else if (memberType.vecsize == 2) uniform.type = ShaderUniformType::Float2;
+                    else if (memberType.vecsize == 3) uniform.type = ShaderUniformType::Float3;
+                    else if (memberType.vecsize == 4) uniform.type = ShaderUniformType::Float4;
+                    else if (memberType.columns == 4 && memberType.vecsize == 4) uniform.type = ShaderUniformType::Mat4;
+                    else if (memberType.columns == 3 && memberType.vecsize == 3) uniform.type = ShaderUniformType::Mat3;
+                }
+                
+                buffer.uniforms.push_back(uniform);
+            }
+            
+            mUniformBuffers.push_back(buffer);
+        }
+        
+        // Process individual uniforms (like samplers)
+        for (const auto &resource : vertexResources.sampled_images) {
+            ShaderUniform uniform;
+            uniform.name = resource.name;
+            uniform.type = ShaderUniformType::Sampler2D;
+            uniform.location = vertexCompiler.get_decoration(resource.id, spv::DecorationBinding);
+            mUniforms.push_back(uniform);
+        }
+        
+        // Also check fragment shader for samplers
+        spirv_cross::Compiler fragmentCompiler(fragmentSpirv);
+        spirv_cross::ShaderResources fragmentResources = fragmentCompiler.get_shader_resources();
+        
+        for (const auto &resource : fragmentResources.sampled_images) {
+            ShaderUniform uniform;
+            uniform.name = resource.name;
+            uniform.type = ShaderUniformType::Sampler2D;
+            uniform.location = fragmentCompiler.get_decoration(resource.id, spv::DecorationBinding);
+            mUniforms.push_back(uniform);
+        }
     }
 }

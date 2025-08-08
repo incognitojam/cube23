@@ -27,6 +27,17 @@ namespace Vox {
         }
     }
 
+    std::shared_ptr<Shader> Shader::createFromSpirv(const std::string &name, const std::string &vertexSpvPath, const std::string &fragmentSpvPath) {
+        switch (Renderer::getAPI()) {
+            case RendererAPI::API::None:
+                throw std::runtime_error("RendererAPI::None is currently not supported!");
+            case RendererAPI::API::OpenGL:
+                return std::make_shared<OpenGLShader>(name, vertexSpvPath, fragmentSpvPath, true);
+            default:
+                throw std::runtime_error("Unknown RendererAPI!");
+        }
+    }
+
     void ShaderLibrary::add(const std::string &name, const std::shared_ptr<Shader> &shader) {
         if (exists(name)) {
             throw std::runtime_error("Shader already exists!");

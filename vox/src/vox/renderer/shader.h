@@ -3,9 +3,34 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <vector>
 #include <glm/glm.hpp>
 
 namespace Vox {
+    enum class ShaderUniformType {
+        None = 0,
+        Float, Float2, Float3, Float4,
+        Mat3, Mat4,
+        Int, Int2, Int3, Int4,
+        Bool,
+        Sampler2D
+    };
+
+    struct ShaderUniform {
+        std::string name;
+        ShaderUniformType type;
+        uint32_t size;
+        uint32_t offset;
+        uint32_t location;
+    };
+
+    struct ShaderUniformBuffer {
+        std::string name;
+        uint32_t size;
+        uint32_t binding;
+        std::vector<ShaderUniform> uniforms;
+    };
+
     class Shader {
     public:
         virtual ~Shader() = default;
@@ -26,6 +51,8 @@ namespace Vox {
         static std::shared_ptr<Shader> create(const std::string &filepath);
         static std::shared_ptr<Shader> create(const std::string &name, const std::string &vertexSrc,
                                               const std::string &fragmentSrc);
+        static std::shared_ptr<Shader> createFromSpirv(const std::string &name, const std::string &vertexSpvPath,
+                                                       const std::string &fragmentSpvPath);
     };
 
     class ShaderLibrary {

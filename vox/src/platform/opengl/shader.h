@@ -1,6 +1,7 @@
 #pragma once
 
 #include <unordered_map>
+#include <vector>
 #include <glm/glm.hpp>
 
 #include "vox/renderer/shader.h"
@@ -12,6 +13,7 @@ namespace Vox {
     public:
         explicit OpenGLShader(const std::string &filepath);
         OpenGLShader(const std::string &name, const std::string &vertexSrc, const std::string &fragmentSrc);
+        OpenGLShader(const std::string &name, const std::string &vertexSpvPath, const std::string &fragmentSpvPath, bool isSpirv);
         ~OpenGLShader() override;
 
         void bind() override;
@@ -29,10 +31,15 @@ namespace Vox {
 
     private:
         static std::string readFile(const std::string &filepath);
+        static std::vector<uint32_t> readSpirv(const std::string &filepath);
         static std::unordered_map<GLenum, std::string> preprocess(const std::string &source);
         void compile(const std::unordered_map<GLenum, std::string> &shaderSources);
+        void compileSpirv(const std::unordered_map<GLenum, std::vector<uint32_t>> &shaderSources);
+        void reflectSpirv(const std::vector<uint32_t> &vertexSpirv, const std::vector<uint32_t> &fragmentSpirv);
 
         std::string mName;
         uint32_t mRendererID;
+        std::vector<ShaderUniformBuffer> mUniformBuffers;
+        std::vector<ShaderUniform> mUniforms;
     };
 }
