@@ -136,6 +136,17 @@ namespace Vox {
 
         for (const auto id : glShaderIDs)
             glDetachShader(mRendererID, id);
+
+        // Set uniform block bindings for OpenGL 3.3 compatibility
+        GLuint cameraBlockIndex = glGetUniformBlockIndex(mRendererID, "CameraData");
+        if (cameraBlockIndex != GL_INVALID_INDEX) {
+            glUniformBlockBinding(mRendererID, cameraBlockIndex, 0);
+        }
+        
+        GLuint objectBlockIndex = glGetUniformBlockIndex(mRendererID, "ObjectData");
+        if (objectBlockIndex != GL_INVALID_INDEX) {
+            glUniformBlockBinding(mRendererID, objectBlockIndex, 1);
+        }
     }
 
     void OpenGLShader::bind() {

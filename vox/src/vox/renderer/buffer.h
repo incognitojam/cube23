@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <memory>
 #include <stdexcept>
 #include <utility>
 #include <vector>
@@ -117,5 +118,16 @@ namespace Vox {
         virtual uint32_t getCount() const = 0;
 
         static IndexBuffer *create(uint32_t *indices, uint32_t count);
+    };
+
+    class UniformBuffer {
+    public:
+        virtual ~UniformBuffer() {}
+
+        virtual void bind() const = 0;
+        virtual void unbind() const = 0;
+        virtual void setData(const void* data, uint32_t size, uint32_t offset = 0) = 0;
+
+        static std::shared_ptr<UniformBuffer> create(uint32_t size, uint32_t binding);
     };
 }
