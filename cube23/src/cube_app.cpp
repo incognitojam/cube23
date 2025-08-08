@@ -30,7 +30,8 @@ public:
         indexBuffer.reset(Vox::IndexBuffer::create(indices, sizeof(indices) / sizeof(uint32_t)));
         mVertexArray->setIndexBuffer(indexBuffer);
 
-        const auto shader = mShaderLibrary.load("shaders/texture.glsl");
+        const auto shader = Vox::Shader::createFromSpirv("texture", "shaders/texture.vert.spv", "shaders/texture.frag.spv");
+        mShaderLibrary.add(shader);
 
         mTexture = Vox::Texture2D::create("textures/texture.jpg");
         mYingaTexture = Vox::Texture2D::create("textures/yinga.png");

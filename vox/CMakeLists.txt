@@ -9,6 +9,24 @@ add_subdirectory(vendor/glad)
 add_subdirectory(vendor/glm)
 add_subdirectory(vendor/stb)
 
+# Add spirv-cross for shader reflection
+include(FetchContent)
+FetchContent_Declare(spirv-cross
+    GIT_REPOSITORY https://github.com/KhronosGroup/SPIRV-Cross.git
+    GIT_TAG main
+)
+FetchContent_MakeAvailable(spirv-cross)
+
+# Add cmake-spirv for shader compilation
+FetchContent_Declare(cmake-spirv
+    GIT_REPOSITORY https://github.com/liliolett/cmake-spirv.git
+    GIT_TAG origin/v1
+)
+FetchContent_MakeAvailable(cmake-spirv)
+
+list(APPEND CMAKE_MODULE_PATH ${cmake-spirv_SOURCE_DIR}/include)
+include(AddSpirvModules)
+
 set(Vox_DIR src)
 set(Vox_SOURCES
         src/vox/core/timestep.h
@@ -59,4 +77,4 @@ set(Vox_SOURCES
 add_library(vox STATIC ${Vox_SOURCES})
 target_include_directories(vox PUBLIC ${Vox_DIR})
 target_compile_definitions(vox PUBLIC GLFW_INCLUDE_NONE)
-target_link_libraries(vox PUBLIC glfw glad glm stb_image)
+target_link_libraries(vox PUBLIC glfw glad glm stb_image spirv-cross-core spirv-cross-glsl)
